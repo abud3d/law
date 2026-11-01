@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#172923">
+  <meta name="theme-color" content="#35432f">
   <meta name="description" content="الموقع الشخصي للمحامية حصة آل علي — التعريف بالخبرات والخدمات والمحتوى القانوني.">
   <title>حصة آل علي | محامية</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,15 +24,48 @@
     footer{background:#101e19;color:#c3cdc5;padding:35px 0}.footer-top{display:flex;justify-content:space-between;align-items:center;gap:20px}.footer-brand{font:700 21px var(--serif);color:white}.footer-links{display:flex;gap:20px;font-size:10px}.footer-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:25px;padding-top:20px;display:flex;justify-content:space-between;gap:15px;font-size:9px;color:#8f9c93}.disclaimer{max-width:760px}
     @media(max-width:850px){.navlinks{display:none;position:absolute;top:87px;right:0;left:0;background:var(--paper);padding:22px;flex-direction:column;align-items:stretch;border-bottom:1px solid var(--line)}.navlinks.open{display:flex}.menu-btn{display:block}.nav-cta{display:none}.hero-grid{grid-template-columns:1fr;gap:30px;padding:70px 0}.hero{min-height:auto}.hero-copy{text-align:center}.eyebrow,.hero-actions,.hero-note{justify-content:center}.hero p{margin:auto}.portrait-wrap{height:330px}.portrait-frame{height:300px;width:245px}.portrait-caption{right:-25px}.strip-grid{grid-template-columns:1fr;gap:14px}.strip-item{border:0;border-bottom:1px solid var(--line);padding:12px 0}.about-grid,.approach-grid,.contact-grid{grid-template-columns:1fr;gap:35px}.about-art{height:280px}.services-grid,.articles-grid{grid-template-columns:1fr 1fr}.footer-top,.footer-bottom{align-items:flex-start;flex-direction:column}}
     @media(max-width:540px){.container{width:min(100% - 30px,1160px)}section{padding:70px 0}.services-grid,.articles-grid{grid-template-columns:1fr}.contact-form{grid-template-columns:1fr}.field.full{grid-column:auto}.hero h1{font-size:48px}.hero p{font-size:12px}.portrait-wrap{height:300px}.strip-item{padding:8px 0}.footer-links{flex-wrap:wrap}}
+  
+    :root{--paper:#35432f;--white:#3e4c37;--muted:#d0d6c9;--line:#59664f;--text:#fffefa}
+    body{color:var(--text);background:var(--paper)}
+    .nav{background:rgba(53,67,47,.97);border-color:var(--line)}
+    .brand-sub,.navlinks{color:#edf0e8}.navlinks a:hover{color:var(--gold2)}
+    .menu-btn{color:#fff}
+    .services,.contact{background:#303d2b}
+    .articles{background:#3b4935}
+    .about-copy p,.field label{color:#e0e4d9}
+    .topbar{background:#263326;color:#f4f1e7;font-size:10px;padding:7px 0}
+    .topbar .container{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    #liveClock{font-variant-numeric:tabular-nums}
+    .theme-btn{background:transparent;color:#fff;border:1px solid #87917b;padding:9px 12px;font:11px var(--sans);cursor:pointer;margin-inline-start:10px}
+    .contact-socials{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+    .contact-socials span{border:1px solid rgba(255,255,255,.25);padding:7px 10px;font-size:10px;color:#e4e8dc}
+    .contact-socials em{font-style:normal;color:#e0c994}
+    body.day-mode{--paper:#f5f3ec;--white:#fffefa;--muted:#777b72;--line:#e3dfd4;--text:#26352a}
+    body.day-mode .nav{background:rgba(247,245,239,.97)}
+    body.day-mode .brand-sub,body.day-mode .navlinks{color:#48534c}
+    body.day-mode .menu-btn,body.day-mode .theme-btn{color:#26352a}
+    body.day-mode .theme-btn{border-color:#b7b09f}
+    body.day-mode .hero{background:#e9e6da;color:#26352a}
+    body.day-mode .hero p{color:#59645b}
+    body.day-mode .hero-note{color:#667168}
+    body.day-mode .services,body.day-mode .contact{background:#eeece5}
+    body.day-mode .articles{background:#fffefa}
+    body.day-mode .about-copy p,body.day-mode .field label{color:#626c64}
+    body.day-mode .navlinks{background:#f7f5ef}
+    @media(max-width:850px){.theme-btn{margin-inline-start:auto}.navlinks{background:#35432f}}
+    @media(max-width:540px){.topbar .container{align-items:flex-start;flex-direction:column;gap:2px}}
+
   </style>
 </head>
 <body>
 <div class="topline"></div>
+<div class="topbar"><div class="container"><span>الموقع الشخصي للمحامية حصة آل علي</span><span><span id="todayDate"></span> · <span id="liveClock" dir="ltr"></span> · توقيت الرياض</span></div></div>
 <header class="nav">
   <div class="container" style="display:flex;align-items:center;justify-content:space-between">
     <a class="brand" href="#home" aria-label="حصة آل علي - الرئيسية"><span class="brand-mark">ح</span><span><span class="brand-name">حصة آل علي</span><span class="brand-sub">محامية · استشارات قانونية</span></span></a>
     <nav class="navlinks" id="navlinks"><a href="#home">الرئيسية</a><a href="#about">نبذة عني</a><a href="#services">مجالات العمل</a><a href="#approach">منهجيتي</a><a href="#insights">المكتبة القانونية</a><a href="#contact">تواصل</a></nav>
     <a class="nav-cta" href="#contact">طلب موعد استشارة ↗</a>
+    <button class="theme-btn" id="themeToggle" type="button">☀ وضع النهار</button>
     <button class="menu-btn" id="menuBtn" aria-label="فتح القائمة">☰</button>
   </div>
 </header>
@@ -90,7 +123,7 @@
   <section class="contact" id="contact"><div class="container">
     <div class="section-head"><div class="section-kicker">تواصل مهني</div><h2 class="section-title">لنبدأ من سؤالك.</h2><p class="section-desc">تُستكمل بيانات التواصل الرسمية ووسائل استقبال الطلبات قبل إطلاق الموقع.</p></div>
     <div class="contact-grid">
-      <div class="contact-card"><h3>حصة آل علي</h3><p>للاستفسارات وطلبات المواعيد، ستُتاح قنوات التواصل المعتمدة هنا بعد إضافتها.</p><div class="contact-line"><span>البريد الإلكتروني</span>يُضاف البريد الرسمي</div><div class="contact-line"><span>رقم التواصل</span>يُضاف رقم العمل</div><div class="contact-line"><span>المدينة / العنوان</span>تُضاف بيانات الموقع عند اعتمادها</div><div class="contact-line"><span>رقم الترخيص المهني</span>يُضاف بعد التحقق من البيانات الرسمية</div></div>
+      <div class="contact-card"><h3>حصة آل علي</h3><p>للاستفسارات وطلبات المواعيد، ستُتاح قنوات التواصل المعتمدة هنا بعد إضافتها.</p><div class="contact-line"><span>البريد الإلكتروني</span>يُضاف البريد الرسمي</div><div class="contact-line"><span>رقم التواصل</span>يُضاف رقم العمل</div><div class="contact-line"><span>المدينة / العنوان</span>تُضاف بيانات الموقع عند اعتمادها</div><div class="contact-line"><span>رقم الترخيص المهني</span>يُضاف بعد التحقق من البيانات الرسمية</div><div class="contact-socials"><span>واتساب <em>05X XXX XXXX · تجريبي</em></span><span>LinkedIn <em>يُضاف الرابط</em></span><span>X <em>يُضاف الحساب</em></span><span>البريد <em>name@example.invalid</em></span><span>موقع المكتب <em>يُضاف رابط الخريطة</em></span></div></div>
       <form class="contact-form" onsubmit="event.preventDefault();alert('نموذج الواجهة جاهز، وسيتم ربطه ببريد المحامية أو نظام استقبال الطلبات بعد تزويدنا ببيانات التواصل.');">
         <div class="field"><label for="name">الاسم</label><input id="name" name="name" placeholder="الاسم الكريم" required></div>
         <div class="field"><label for="phone">رقم التواصل</label><input id="phone" name="phone" type="tel" placeholder="05xxxxxxxx" required></div>
@@ -110,6 +143,13 @@
   menuBtn.addEventListener('click',()=>nav.classList.toggle('open'));
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
   document.getElementById('year').textContent=new Date().getFullYear();
+
+  const themeToggle=document.getElementById('themeToggle');
+  themeToggle.addEventListener('click',()=>{document.body.classList.toggle('day-mode');const day=document.body.classList.contains('day-mode');themeToggle.textContent=day?'☾ الوضع الليلي':'☀ وضع النهار';});
+  const dateOptions={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+  const updateClock=()=>{const now=new Date();document.getElementById('todayDate').textContent=new Intl.DateTimeFormat('ar-SA-u-ca-gregory',dateOptions).format(now);document.getElementById('liveClock').textContent=new Intl.DateTimeFormat('ar-SA',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true,timeZone:'Asia/Riyadh'}).format(now);};
+  updateClock();setInterval(updateClock,1000);
+
 </script>
 </body>
 </html>
