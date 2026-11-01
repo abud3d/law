@@ -69,6 +69,12 @@
     @media(max-width:850px){.theme-btn{margin-inline-start:auto}.navlinks{background:#35432f}}
     @media(max-width:540px){.topbar .container{align-items:flex-start;flex-direction:column;gap:2px}}
 
+  
+    .faq-section{background:#303d2b}.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.faq-item{background:#3e4c37;border:1px solid #59664f;padding:18px 20px;color:#fffefa}.faq-item summary{cursor:pointer;font:700 17px var(--serif)}.faq-item p{font-size:12px;color:#e0e4d9;margin:12px 0 0;line-height:2.1}.official-section{background:#35432f}.official-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.official-card{display:flex;flex-direction:column;gap:7px;padding:22px;background:#3e4c37;border:1px solid #59664f;min-height:145px}.official-card b{font:700 18px var(--serif);color:#fffefa}.official-card span{font-size:11px;color:#d0d6c9}.official-card small{font-size:10px;color:#e0c994;margin-top:auto;direction:ltr;text-align:right}
+    body.day-mode .faq-section,body.day-mode .official-section{background:#eeece5}body.day-mode .faq-item,body.day-mode .official-card{background:#fffefa;border-color:#e3dfd4;color:#26352a}body.day-mode .faq-item summary,body.day-mode .official-card b{color:#26352a}body.day-mode .faq-item p,body.day-mode .official-card span{color:#626c64}
+    @media(max-width:850px){.official-grid{grid-template-columns:1fr 1fr}.faq-grid{grid-template-columns:1fr}}
+    @media(max-width:540px){.official-grid{grid-template-columns:1fr}}
+
   </style>
 <!-- seo-language-links-pending -->
 </head>
@@ -135,6 +141,30 @@
       <article class="article"><small>إجراءات · يُستكمل لاحقاً</small><h3>تنظيم المستندات قبل بدء أي إجراء</h3><p>خطوات عامة لترتيب الوقائع والمراسلات والمستندات ذات الصلة.</p></article>
     </div>
   </div></section>
+
+  <section class="faq-section" id="faq"><div class="container">
+    <div class="section-head"><div class="section-kicker">أسئلة شائعة</div><h2 class="section-title">إجابات أولية عن المعرفة القانونية</h2><p class="section-desc">إجابات عامة تساعد الزائر على الوصول إلى المعلومة والمصدر المناسب.</p></div>
+    <div class="faq-grid">
+      <details class="faq-item"><summary>هل تغني المعلومات المنشورة عن الاستشارة القانونية؟</summary><p>لا. المحتوى للتوعية العامة، ولا يقيّم وقائع قضية أو مستندات بعينها، ولا يحل محل استشارة قانونية مخصصة.</p></details>
+      <details class="faq-item"><summary>ما المصدر المعتمد للنصوص النظامية؟</summary><p>يُرجع إلى النص المنشور لدى الجهة الحكومية المختصة، وتوفر المكتبة روابط للمصادر الرسمية، وعلى رأسها هيئة الخبراء بمجلس الوزراء.</p></details>
+      <details class="faq-item"><summary>هل تشمل المكتبة جميع الأنظمة واللوائح؟</summary><p>المكتبة في مرحلة التوسعة، ويُذكر نطاق المواد المفهرسة بوضوح. عدم ظهور مادة في البحث لا يعني عدم وجودها في النظام.</p></details>
+      <details class="faq-item"><summary>كيف أبحث عن مادة أو بند؟</summary><p>استخدم البحث باسم النظام أو رقم المادة أو كلمة من نصها، ثم افتح صفحة النظام وتحقق من النص الكامل لدى المصدر الرسمي.</p></details>
+      <details class="faq-item"><summary>هل النص الإنجليزي ترجمة رسمية؟</summary><p>المحتوى الإنجليزي توضيحي ما لم يُذكر صراحة أنه ترجمة رسمية صادرة عن جهة مختصة. النص العربي الرسمي هو المرجع.</p></details>
+      <details class="faq-item"><summary>كيف أطلب استشارة أو أتواصل؟</summary><p>استخدم قسم التواصل بعد اعتماد بيانات الاتصال الرسمية. لا ترسل معلومات سرية أو مستندات حساسة عبر نموذج تجريبي.</p></details>
+    </div>
+  </div></section>
+  <section class="official-section" id="official"><div class="container">
+    <div class="section-head"><div class="section-kicker">مراجع حكومية</div><h2 class="section-title">جهات رسمية ذات صلة</h2><p class="section-desc">روابط إلى جهات حكومية ومراجع رسمية للاستعلام والتحقق. إدراجها هنا لا يعني وجود شراكة أو اعتماد أو رعاية من أي جهة.</p></div>
+    <div class="official-grid">
+      <a class="official-card" href="https://laws.boe.gov.sa/" target="_blank" rel="noopener"><b>هيئة الخبراء بمجلس الوزراء</b><span>بوابة الأنظمة واللوائح والقرارات الرسمية</span><small>laws.boe.gov.sa ↗</small></a>
+      <a class="official-card" href="https://www.moj.gov.sa/" target="_blank" rel="noopener"><b>وزارة العدل</b><span>الخدمات العدلية والأنظمة والإجراءات القضائية</span><small>moj.gov.sa ↗</small></a>
+      <a class="official-card" href="https://www.hrsd.gov.sa/" target="_blank" rel="noopener"><b>وزارة الموارد البشرية والتنمية الاجتماعية</b><span>أنظمة العمل واللوائح والخدمات العمالية</span><small>hrsd.gov.sa ↗</small></a>
+      <a class="official-card" href="https://mc.gov.sa/" target="_blank" rel="noopener"><b>وزارة التجارة</b><span>الشركات والسجل التجاري والأنشطة التجارية</span><small>mc.gov.sa ↗</small></a>
+      <a class="official-card" href="https://cma.org.sa/" target="_blank" rel="noopener"><b>هيئة السوق المالية</b><span>الأنظمة واللوائح المنظمة للسوق المالية</span><small>cma.org.sa ↗</small></a>
+      <a class="official-card" href="https://www.saip.gov.sa/" target="_blank" rel="noopener"><b>الهيئة السعودية للملكية الفكرية</b><span>حقوق الملكية الفكرية واللوائح ذات الصلة</span><small>saip.gov.sa ↗</small></a>
+    </div>
+  </div></section>
+
   <section class="contact" id="contact"><div class="container">
     <div class="section-head"><div class="section-kicker">تواصل مهني</div><h2 class="section-title">لنبدأ من سؤالك.</h2><p class="section-desc">تُستكمل بيانات التواصل الرسمية ووسائل استقبال الطلبات قبل إطلاق الموقع.</p></div>
     <div class="contact-grid">
