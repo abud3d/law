@@ -64,11 +64,6 @@
   <div id="datasetStats" class="stats-grid" aria-live="polite"></div>
   <p class="dataset-note">جميع السجلات المستوردة معروضة للبحث والاستدلال الأولي، ولم تتم مطابقتها رسمياً مادةً بمادة. عدد السجلات لا يعني بالضرورة عدد المواد الفريدة.</p>
  </section>
- <section class="featured-section">
-  <h2 class="section-title">صفحات الأنظمة التي أُعدت سابقاً</h2>
-  <p class="muted-note">هذه صفحات مستقلة موجودة بالموقع. بعض صفحاتها تحتوي مقتطفات أولية فقط؛ استخدم رابط المصدر الرسمي للنص الكامل.</p>
-  <div class="meta"><span id="count">جارٍ تجهيز فهرس الأنظمة…</span><span>اختر مجالاً لبدء التصفح</span></div><div class="grid" id="results" aria-live="polite"></div>
- </section>
  <section class="article-search">
   <h2>نتائج البحث داخل المواد والسجلات</h2>
   <p class="article-search-note">تظهر هنا النتائج المطابقة من صفحات الموقع والمجموعة المستوردة. السجلات المستوردة غير مطابقة رسمياً.</p>
@@ -78,14 +73,6 @@
 </main>
 <footer class="site-footer"><div class="site-wrap"><div class="site-footer-top"><div><strong>حصة آل علي</strong><div>المكتبة القانونية السعودية</div></div><nav class="site-footer-links"><a href="../index.html">الرئيسية</a><a href="index.html">فهرس الأنظمة</a><a href="../index.html#faq">الأسئلة الشائعة</a><a href="../index.html#official">المراجع الحكومية</a><a href="../index.html#contact">التواصل</a></nav></div><div class="site-footer-bottom">النصوص النظامية يُرجع فيها إلى المصدر الحكومي الرسمي، والمحتوى للتوعية العامة ولا يمثل استشارة قانونية مخصصة. لا تعني روابط الجهات وجود شراكة أو اعتماد منها.</div></div></footer>
 <script>
-const laws=[
-{id:"civil",cat:"civil",name:"نظام المعاملات المدنية",en:"Civil Transactions Law",date:"18 يونيو 2023",status:"ساري وفق صفحة المصدر",desc:"ينظم الحقوق الشخصية والالتزامات والعقود والتعويض والحقوق العينية.",keys:"عقد التزام تعويض ضرر أموال حقوق مدنية",url:"https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/655fdb42-8c96-422b-b8c4-b04f0095c94c/1",file:"civil-transactions.html"},
-{id:"evidence",cat:"procedure",name:"نظام الإثبات",en:"Evidence Law",date:"7 يناير 2022",status:"ساري وفق صفحة المصدر",desc:"ينظم وسائل الإثبات، والمحررات، والدليل الرقمي، والشهادة، والخبرة واليمين.",keys:"إثبات بينة محررات دليل رقمي شهادة خبرة يمين",url:"https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/2716057c-c097-4bad-8e1e-ae1400c678d5/1",file:"evidence.html"},
-{id:"labor",cat:"labor",name:"نظام العمل",en:"Labor Law",date:"28 أكتوبر 2005",status:"ساري وفق صفحة المصدر",desc:"ينظم علاقات العمل وعقود العمل وحقوق وواجبات العامل وصاحب العمل.",keys:"عمل عامل صاحب عمل عقد أجور إجازات إنهاء خدمة",url:"https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/08381293-6388-48e2-8ad2-a9a700f2aa94/1",file:"labor.html"},
-{id:"companies",cat:"labor",name:"نظام الشركات",en:"Companies Law",date:"22 يوليو 2022",status:"ساري وفق صفحة المصدر",desc:"ينظم أشكال الشركات وتأسيسها وإدارتها وتحولها واندماجها وانقضاءها.",keys:"شركات تأسيس مساهمة مسؤولية محدودة حوكمة مدير",url:"https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/a8376aea-1bc3-49d4-9027-aed900b555af/1",file:"companies.html"},
-{id:"family",cat:"family",name:"نظام الأحوال الشخصية",en:"Personal Status Law",date:"18 مارس 2022",status:"ساري وفق صفحة المصدر",desc:"يتناول الزواج والحقوق الزوجية والطلاق والخلع والحضانة والوصاية والوصية والإرث.",keys:"زواج نفقة طلاق خلع حضانة وصاية وصية إرث",url:"https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/4d72d829-947b-45d5-b9b5-ae5800d6bac2/1",file:"personal-status.html"},
-{id:"execution",cat:"procedure",name:"نظام التنفيذ",en:"Enforcement Law",date:"1 مايو 2026",status:"نص المصدر يقرر النفاذ بعد 180 يوماً من النشر؛ راجع الحالة لدى المصدر",desc:"ينظم الاختصاص والسند التنفيذي وإجراءات التنفيذ ومنازعات التنفيذ والاعتراض عليها.",keys:"تنفيذ سند تنفيذي محكمة تنفيذ حجز منازعة",url:"https://laws.boe.gov.sa/BoeLaws/Laws/SearchDetails/?Id=67dd54bc-c33a-48c8-8356-b44700a9ab55&Query=",file:"enforcement.html"}
-];
 const q=document.getElementById("q"),out=document.getElementById("results"),count=document.getElementById("count");
 const normalize=s=>(s||"").toLocaleLowerCase("ar").normalize("NFD").replace(/[\\u064B-\\u065F\\u0670\\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").trim();
 const categories=[
@@ -106,21 +93,23 @@ const categoryFor=name=>{const n=normalize(name);for(const c of categories.filte
 const categoryName=id=>categories.find(c=>c.id===id)?.name||"قطاعات ومجالات أخرى";
 let cat="all",articleCorpus=[],corpusReady=false,datasetCount=0,datasetLaws=0,datasetError=false,datasetGroups=[],selectedDatasetLaw="",selectedCategory="",selectedSub="";
 async function loadArticles(){
- const batches=await Promise.all(laws.map(async law=>{try{const response=await fetch(law.file);if(!response.ok)return[];const html=await response.text(),doc=new DOMParser().parseFromString(html,"text/html");return [...doc.querySelectorAll("#articles .article")].map((el,index)=>({origin:"site",law:law.name,file:law.file,anchor:"article-"+(index+1),title:el.querySelector("h2")?.textContent||law.name,text:el.querySelector("p")?.textContent||el.textContent,search:normalize((el.dataset.search||"")+" "+el.textContent)}));}catch(e){return[]}}));
- articleCorpus=batches.flat();
- try{const response=await fetch("data/saudi-legal-moj.json");if(!response.ok)throw new Error("HTTP "+response.status);const records=await response.json();datasetCount=records.length;
- const grouped=new Map();records.forEach(r=>{const name=r.law_name||"غير محدد";if(!grouped.has(name)){const c=categoryFor(name);grouped.set(name,{name,type:r.law_type||"غير محدد",count:0,category:c.category,sub:c.sub});}grouped.get(name).count++;});
- datasetGroups=[...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,"ar"));datasetLaws=datasetGroups.length;
- records.forEach(r=>{const title=[r.article_number,r.law_name].filter(Boolean).join(" — ")||"نص نظامي";const text=r.text||"";const c=categoryFor(r.law_name||"");articleCorpus.push({origin:"dataset",law:r.law_name||"غير محدد",title,text,source:r.source||"",lawType:r.law_type||"",category:c.category,sub:c.sub,search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
+ try{
+  const response=await fetch("data/saudi-legal-moj.json");
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const records=await response.json();datasetCount=records.length;
+  const grouped=new Map();
+  records.forEach(r=>{const name=r.law_name||"غير محدد";if(!grouped.has(name)){const c=categoryFor(name);grouped.set(name,{name,type:r.law_type||"غير محدد",count:0,category:c.category,sub:c.sub});}grouped.get(name).count++;});
+  datasetGroups=[...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,"ar"));datasetLaws=datasetGroups.length;
+  records.forEach(r=>{const title=[r.article_number,r.law_name].filter(Boolean).join(" — ")||"نص نظامي";const text=r.text||"";const c=categoryFor(r.law_name||"");articleCorpus.push({origin:"dataset",law:r.law_name||"غير محدد",title,text,source:r.source||"",lawType:r.law_type||"",category:c.category,sub:c.sub,search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
  }catch(e){datasetError=true;console.warn("تعذر تحميل مجموعة البيانات:",e);}
  corpusReady=true;renderStats();renderHierarchy();renderArticles();
 }
-function renderStats(){const stats=document.getElementById("datasetStats");const vals=[[laws.length,"صفحات أنظمة مستقلة"],[datasetLaws,"اسماً لتشريع مستورد"],[datasetCount,"سجلاً مستورداً"],[articleCorpus.filter(x=>x.origin==="site").length,"مادة مفهرسة بصفحات الموقع"],[0,"سجلاً تمت مطابقته رسمياً"]];stats.replaceChildren();vals.forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-card";const s=document.createElement("strong");s.textContent=Number(v).toLocaleString("ar-SA");const p=document.createElement("span");p.textContent=l;d.append(s,p);stats.append(d);});}
+function renderStats(){const stats=document.getElementById("datasetStats");const vals=[[datasetLaws,"اسماً لتشريع مستورد"],[datasetCount,"سجلاً مستورداً"],[0,"سجلاً تمت مطابقته رسمياً"]];stats.replaceChildren();vals.forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-card";const s=document.createElement("strong");s.textContent=Number(v).toLocaleString("ar-SA");const p=document.createElement("span");p.textContent=l;d.append(s,p);stats.append(d);});}
 function renderHierarchy(){
  const nav=document.getElementById("categoryNav"),sub=document.getElementById("subNav"),list=document.getElementById("lawList"),title=document.getElementById("hierarchyTitle"),path=document.getElementById("pathline"),back=document.getElementById("hierarchyBack");
  nav.replaceChildren();sub.replaceChildren();list.replaceChildren();
  const counts={};datasetGroups.forEach(d=>counts[d.category]=(counts[d.category]||0)+d.count);
- categories.forEach(c=>{const b=document.createElement("button");b.className="category-card"+(selectedCategory===c.id?" active":"");b.type="button";const strong=document.createElement("strong");strong.textContent=c.name;const span=document.createElement("span");span.textContent=c.desc;const em=document.createElement("em");const featuredCount=laws.filter(l=>(c.id==="civil"&&l.id==="civil")||(c.id==="commercial"&&l.id==="companies")||(c.id==="procedure"&&(l.id==="evidence"||l.id==="execution"))||(c.id==="labor"&&l.id==="labor")||(c.id==="family"&&l.id==="family")).length;em.textContent=(datasetGroups.filter(d=>d.category===c.id).length+featuredCount).toLocaleString("ar-SA")+" تشريعاً وصفحة مفهرسة";b.append(strong,span,em);b.addEventListener("click",()=>{selectedCategory=c.id;selectedSub="";selectedDatasetLaw="";renderHierarchy();renderArticles();});nav.append(b);});
+ categories.filter(c=>!selectedCategory||c.id===selectedCategory).forEach(c=>{const b=document.createElement("button");b.className="category-card"+(selectedCategory===c.id?" active":"");b.type="button";const strong=document.createElement("strong");strong.textContent=c.name;const span=document.createElement("span");span.textContent=c.desc;const em=document.createElement("em");const featuredCount=laws.filter(l=>(c.id==="civil"&&l.id==="civil")||(c.id==="commercial"&&l.id==="companies")||(c.id==="procedure"&&(l.id==="evidence"||l.id==="execution"))||(c.id==="labor"&&l.id==="labor")||(c.id==="family"&&l.id==="family")).length;em.textContent=(datasetGroups.filter(d=>d.category===c.id).length+featuredCount).toLocaleString("ar-SA")+" تشريعاً وصفحة مفهرسة";b.append(strong,span,em);b.addEventListener("click",()=>{selectedCategory=c.id;selectedSub="";selectedDatasetLaw="";renderHierarchy();renderArticles();});nav.append(b);});
  if(!selectedCategory){title.textContent="اختر المجال الذي تريد تصفحه";path.textContent="المكتبة القانونية ← المجالات";back.hidden=true;return;}
  const c=categories.find(x=>x.id===selectedCategory);title.textContent=c.name;path.textContent="المكتبة القانونية ← "+c.name;back.hidden=false;
  c.subs.forEach(s=>{const docs=datasetGroups.filter(d=>d.category===c.id&&d.sub===s[0]);if(!docs.length)return;const b=document.createElement("button");b.type="button";b.className=selectedSub===s[0]?"active":"";b.textContent=s[0]+" ("+docs.length.toLocaleString("ar-SA")+")";b.addEventListener("click",()=>{selectedSub=s[0];selectedDatasetLaw="";renderHierarchy();renderArticles();});sub.append(b);});
@@ -138,9 +127,8 @@ function renderArticles(){
  target.replaceChildren();hits.slice(0,100).forEach(hit=>{const card=document.createElement("article");card.className="article-hit";const h=document.createElement("h3");h.textContent=hit.title+" — "+hit.law;const p=document.createElement("p");p.textContent=(hit.text||"").slice(0,1000)+(hit.text&&hit.text.length>1000?"…":"");const a=document.createElement("a");if(hit.origin==="site"){a.href=hit.file+"#"+hit.anchor;a.textContent="فتح صفحة النظام ←";}else{a.href="https://www.moj.gov.sa/";a.target="_blank";a.rel="noopener";a.textContent="المصدر المسجل: "+(hit.source||"غير محدد")+" · لم تتم المطابقة الرسمية ↗";}card.append(h,p,a);target.append(card);});
  if(!hits.length&&(term||selectedDatasetLaw)){const p=document.createElement("p");p.textContent="لا توجد نتائج مطابقة في البيانات المحمّلة.";target.append(p);}
 }
-function renderFeatured(){const term=normalize(q.value);const found=laws.filter(x=>(!term||normalize([x.name,x.en,x.desc,x.keys].join(" ")).includes(term)));count.textContent="صفحات الأنظمة المستقلة: "+found.length+" من "+laws.length;out.innerHTML=found.map(x=>'<article class="law"><span class="tag">'+x.cat+'</span><h2>'+x.name+'</h2><div class="en">'+x.en+'</div><p>'+x.desc+'</p><small>تاريخ النشر: '+x.date+'</small><div class="status">'+x.status+'</div><a href="'+x.file+'">عرض الصفحة الحالية ←</a><a href="'+x.url+'" target="_blank" rel="noopener">المصدر الرسمي ↗</a></article>').join("")||'<div class="empty">لا توجد صفحات مطابقة.</div>';}
-document.getElementById("hierarchyBack").addEventListener("click",()=>{if(selectedSub)selectedSub="";else selectedCategory="";selectedDatasetLaw="";renderHierarchy();renderArticles();});
-q.addEventListener("input",()=>{selectedDatasetLaw="";selectedCategory="";selectedSub="";renderHierarchy();renderFeatured();renderArticles();});
-renderFeatured();renderHierarchy();renderArticles();loadArticles();
+document.getElementById("hierarchyBack").addEventListener("click",()=>{selectedCategory="";selectedSub="";selectedDatasetLaw="";renderHierarchy();renderArticles();});
+q.addEventListener("input",()=>{selectedDatasetLaw="";selectedCategory="";selectedSub="";renderHierarchy();renderArticles();});
+renderHierarchy();renderArticles();loadArticles();
 </script>
 </body></html>
