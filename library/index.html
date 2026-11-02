@@ -21,6 +21,21 @@
 @media(max-width:560px){.article-results{grid-template-columns:1fr}}
 
 .dataset-overview{margin:28px 0 24px}.dataset-overview h2{font-size:21px;margin:0 0 6px}.dataset-note{font-size:12px;color:var(--muted);margin:0 0 14px}.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:14px 0 22px}.stat-card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:13px}.stat-card strong{display:block;font-size:23px;line-height:1.5;color:var(--green);font-variant-numeric:tabular-nums}.stat-card span{font-size:11px;color:var(--muted)}.dataset-law-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.dataset-law{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;min-width:0}.dataset-law h3{font-size:14px;line-height:1.7;margin:0 0 5px}.dataset-law p{font-size:11px;color:var(--muted);margin:4px 0}.dataset-law button{margin-top:8px;border:1px solid var(--line);background:#f7f4ec;color:var(--green);border-radius:5px;padding:7px 10px;font:inherit;font-size:11px;cursor:pointer}.dataset-warning{color:#875f2c!important}.article-count{line-height:2}@media(max-width:850px){.stats-grid{grid-template-columns:repeat(3,1fr)}.dataset-law-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.stats-grid{grid-template-columns:repeat(2,1fr)}.dataset-law-grid{grid-template-columns:1fr}}
+
+/* Hierarchical legal library */
+.library-intro{margin:26px 0 12px}.library-intro h2,.section-title{font-size:22px;margin:0 0 5px}.muted-note{font-size:12px;color:var(--muted);margin:0 0 14px}
+.category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+.category-card{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:17px;text-align:right;cursor:pointer;color:var(--ink);font:inherit;min-height:112px;transition:border-color .15s,transform .15s}
+.category-card:hover,.category-card.active{border-color:var(--gold);transform:translateY(-1px)}
+.category-card strong{display:block;font-size:16px;margin-bottom:4px}.category-card span{display:block;color:var(--muted);font-size:11px}.category-card em{display:block;font-style:normal;color:#8b7044;font-size:12px;margin-top:8px}
+.subnav{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.subnav button,.back-button{border:1px solid var(--line);background:var(--card);border-radius:22px;padding:7px 13px;color:var(--ink);font:inherit;font-size:12px;cursor:pointer}.subnav button.active,.back-button{background:var(--green);color:#fff;border-color:var(--green)}
+.hierarchy-panel{background:#fffefa;border:1px solid var(--line);border-radius:9px;padding:18px;margin:16px 0 28px}.hierarchy-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.hierarchy-heading h3{font-size:17px;margin:0}.law-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.dataset-law{padding:15px}.dataset-law h3{font-size:14px}.dataset-law button{font-size:11px}.dataset-warning{line-height:1.8}
+.document-row{border:1px solid var(--line);background:#fff;border-radius:7px;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:12px}.document-row strong{font-size:13px}.document-row small{display:block;color:var(--muted);font-size:11px}.document-row button{white-space:nowrap;border:1px solid var(--line);background:#f7f4ec;color:var(--green);border-radius:5px;padding:7px 10px;font:inherit;font-size:11px;cursor:pointer}
+.pathline{font-size:11px;color:#8b7044;margin:8px 0}.featured-section{margin:34px 0}.featured-section .grid{margin-top:14px}
+@media(max-width:850px){.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.category-grid,.law-list{grid-template-columns:1fr}.hierarchy-panel{padding:13px}.document-row{align-items:flex-start;flex-direction:column}.document-row button{width:100%}}
+
 </style>
 <!-- seo-language-links-pending -->
 </head>
@@ -28,10 +43,38 @@
 <header class="site-header"><div class="site-wrap"><a class="site-brand" href="../index.html"><span class="site-mark">ح</span><span><strong>حصة آل علي</strong><small>منصة قانونية سعودية</small></span></a><nav class="site-links"><a href="../index.html">الرئيسية</a><a href="index.html">المكتبة القانونية</a><a href="../en/library/">English</a><a href="../index.html#faq">الأسئلة الشائعة</a><a href="../index.html#contact">تواصل</a></nav></div></header>
 <header class="hero"><div class="wrap"><div class="eyebrow">المعرفة القانونية السعودية</div><h1>المكتبة القانونية</h1><p>فهرس منظم للأنظمة السعودية وروابطها الرسمية، مع إمكانية البحث باسم النظام أو موضوعه أو رقم المادة. النص النظامي المعتمد هو المنشور لدى الجهة الحكومية المختصة.</p></div></header>
 <main class="wrap">
-<div class="searchbox"><input id="q" type="search" aria-label="ابحث في الأنظمة والمواد" placeholder="ابحث باسم النظام أو رقم المادة أو نصها أو أحد بنودها…"><div class="filters" id="filters"><button class="active" data-cat="all">الكل</button><button data-cat="civil">مدني وتجاري</button><button data-cat="labor">عمل وشركات</button><button data-cat="family">أحوال شخصية</button><button data-cat="procedure">إثبات وتنفيذ</button></div></div>
-<div class="meta"><span id="count">جارٍ تحميل الفهرس…</span><span>المصادر: هيئة الخبراء بمجلس الوزراء</span></div>
-<div class="grid" id="results" aria-live="polite"></div><section class="dataset-overview" aria-labelledby="datasetHeading"><h2 id="datasetHeading">إحصائيات المكتبة والمجموعة المستوردة</h2><p class="dataset-note">الأعداد محسوبة تلقائياً من الملفات المحمّلة. بيانات المجموعة المستوردة للبحث والاستدلال الأولي، ولم تتم مطابقتها رسمياً مادةً بمادة.</p><div id="datasetStats" class="stats-grid" aria-live="polite"></div><h2>التشريعات في المجموعة المستوردة</h2><p class="dataset-note">اختر أي تشريع لعرض سجلاته ومواده في نتائج البحث. عدد السجلات لا يعني بالضرورة عدد المواد الفريدة.</p><div id="datasetLaws" class="dataset-law-grid" aria-live="polite"></div></section>
-<section class="article-search"><h2>نتائج البحث داخل المواد والبنود</h2><p class="article-search-note">يبحث هذا القسم في نصوص المواد المفهرسة حالياً في صفحات الأنظمة الستة. قد لا تظهر نتيجة إذا لم تكن المادة قد أُدرجت بعد؛ راجع المصدر الرسمي للنص الكامل.</p><div id="articleCount" class="article-count">جارٍ تحميل المواد…</div><div id="articleResults" class="article-results" aria-live="polite"></div></section>
+ <div class="searchbox">
+  <input id="q" type="search" aria-label="ابحث في الأنظمة والمواد" placeholder="ابحث باسم النظام أو اللائحة أو رقم المادة أو نصها…">
+  <div class="filters" id="filters"><button class="active" data-cat="all">كل المجالات</button></div>
+ </div>
+ <section class="library-intro">
+  <h2>تصفح المكتبة حسب المجال القانوني</h2>
+  <p class="muted-note">اختر مجالاً، ثم تخصصاً، ثم التشريع لعرض سجلاته. هذا تصنيف موضوعي تنظيمي للمكتبة وليس تقسيماً حكومياً رسمياً.</p>
+  <div id="categoryNav" class="category-grid" aria-live="polite"></div>
+ </section>
+ <section class="hierarchy-panel" aria-live="polite">
+  <div class="hierarchy-heading"><h3 id="hierarchyTitle">اختر المجال الذي تريد تصفحه</h3><button id="hierarchyBack" class="back-button" type="button" hidden>رجوع</button></div>
+  <div id="pathline" class="pathline"></div>
+  <div id="subNav" class="subnav"></div>
+  <div id="lawList" class="law-list"></div>
+ </section>
+ <section class="dataset-overview" aria-labelledby="datasetHeading">
+  <h2 id="datasetHeading">بيانات المجموعة المستوردة</h2>
+  <p class="dataset-note">الأعداد محسوبة من الملف المستورد. مصدر البيانات المسجل هو moj.gov.sa، لكن ذلك لا يثبت مطابقة النصوص للمصدر الرسمي.</p>
+  <div id="datasetStats" class="stats-grid" aria-live="polite"></div>
+  <p class="dataset-note">جميع السجلات المستوردة معروضة للبحث والاستدلال الأولي، ولم تتم مطابقتها رسمياً مادةً بمادة. عدد السجلات لا يعني بالضرورة عدد المواد الفريدة.</p>
+ </section>
+ <section class="featured-section">
+  <h2 class="section-title">صفحات الأنظمة التي أُعدت سابقاً</h2>
+  <p class="muted-note">هذه صفحات مستقلة موجودة بالموقع. بعض صفحاتها تحتوي مقتطفات أولية فقط؛ استخدم رابط المصدر الرسمي للنص الكامل.</p>
+  <div class="grid" id="results" aria-live="polite"></div>
+ </section>
+ <section class="article-search">
+  <h2>نتائج البحث داخل المواد والسجلات</h2>
+  <p class="article-search-note">تظهر هنا النتائج المطابقة من صفحات الموقع والمجموعة المستوردة. السجلات المستوردة غير مطابقة رسمياً.</p>
+  <div id="articleCount" class="article-count">جارٍ تحميل المواد…</div>
+  <div id="articleResults" class="article-results" aria-live="polite"></div>
+ </section>
 </main>
 <footer class="site-footer"><div class="site-wrap"><div class="site-footer-top"><div><strong>حصة آل علي</strong><div>المكتبة القانونية السعودية</div></div><nav class="site-footer-links"><a href="../index.html">الرئيسية</a><a href="index.html">فهرس الأنظمة</a><a href="../index.html#faq">الأسئلة الشائعة</a><a href="../index.html#official">المراجع الحكومية</a><a href="../index.html#contact">التواصل</a></nav></div><div class="site-footer-bottom">النصوص النظامية يُرجع فيها إلى المصدر الحكومي الرسمي، والمحتوى للتوعية العامة ولا يمثل استشارة قانونية مخصصة. لا تعني روابط الجهات وجود شراكة أو اعتماد منها.</div></div></footer>
 <script>
@@ -43,53 +86,62 @@ const laws=[
 {id:"family",cat:"family",name:"نظام الأحوال الشخصية",en:"Personal Status Law",date:"18 مارس 2022",status:"ساري وفق صفحة المصدر",desc:"يتناول الزواج والحقوق الزوجية والطلاق والخلع والحضانة والوصاية والوصية والإرث.",keys:"زواج نفقة طلاق خلع حضانة وصاية وصية إرث",url:"https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/4d72d829-947b-45d5-b9b5-ae5800d6bac2/1",file:"personal-status.html"},
 {id:"execution",cat:"procedure",name:"نظام التنفيذ",en:"Enforcement Law",date:"1 مايو 2026",status:"نص المصدر يقرر النفاذ بعد 180 يوماً من النشر؛ راجع الحالة لدى المصدر",desc:"ينظم الاختصاص والسند التنفيذي وإجراءات التنفيذ ومنازعات التنفيذ والاعتراض عليها.",keys:"تنفيذ سند تنفيذي محكمة تنفيذ حجز منازعة",url:"https://laws.boe.gov.sa/BoeLaws/Laws/SearchDetails/?Id=67dd54bc-c33a-48c8-8356-b44700a9ab55&Query=",file:"enforcement.html"}
 ];
-const q=document.getElementById("q"),out=document.getElementById("results"),count=document.getElementById("count");let cat="all";
-const normalize=s=>(s||"").toLocaleLowerCase("ar").normalize("NFD").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").trim();
-let articleCorpus=[],corpusReady=false,datasetCount=0,datasetLaws=0,datasetError=false,datasetGroups=[];let selectedDatasetLaw="";
+const q=document.getElementById("q"),out=document.getElementById("results"),count=document.getElementById("count");
+const normalize=s=>(s||"").toLocaleLowerCase("ar").normalize("NFD").replace(/[\\u064B-\\u065F\\u0670\\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").trim();
+const categories=[
+{id:"civil",name:"القانون المدني",desc:"الالتزامات والعقود والحقوق والتعويض",subs:[["الالتزامات والعقود",/معاملات مدنية|التزامات|عقود|بيع|إيجار|مقاولة/],["المسؤولية والتعويض",/مسؤولية|تعويض|ضرر|ضمان/],["الحقوق والأموال",/ملكية|حقوق عينية|أموال|رهن/]]},
+{id:"commercial",name:"القانون التجاري",desc:"الشركات والأعمال والتجارة والإفلاس",subs:[["الشركات",/شركات|شركة/],["التجارة والأعمال",/تجاري|تجارة|أوراق تجارية|وكالات تجارية/],["الإفلاس والاستثمار",/إفلاس|استثمار/]]},
+{id:"criminal",name:"القانون الجنائي",desc:"الجرائم والعقوبات والإجراءات الجزائية",subs:[["الجرائم والعقوبات",/جزائي|جنائي|جرائم|عقوبات|مخدرات/],["الجرائم المالية والمعلوماتية",/غسل الأموال|معلوماتية|احتيال|رشوة/],["الإجراءات الجزائية",/إجراءات جزائية|النيابة العامة/]]},
+{id:"procedure",name:"القضاء والإجراءات",desc:"المرافعات والإثبات والتنفيذ والاعتراض",subs:[["المرافعات والتقاضي",/مرافعات|محاكم|قضاء|استئناف|اعتراض/],["الإثبات والتوثيق",/إثبات|توثيق|موثق|خبرة/],["التنفيذ والتحكيم",/تنفيذ|تحكيم/]]},
+{id:"labor",name:"العمل والموارد البشرية",desc:"علاقات العمل والحقوق والواجبات",subs:[["علاقات العمل",/عمل|عمال|عامل|عمالة|موارد بشرية/],["التأمينات وإصابات العمل",/تأمينات اجتماعية|إصابات العمل|تقاعد/]]},
+{id:"family",name:"الأحوال الشخصية والأسرة",desc:"الزواج والطلاق والنفقة والحضانة والإرث",subs:[["الزواج والفرقة",/أحوال شخصية|زواج|طلاق|خلع/],["النفقة والحضانة",/نفقة|حضانة|ولاية|وصاية/],["الوصايا والمواريث",/وصية|مواريث|إرث/]]},
+{id:"realestate",name:"القانون العقاري",desc:"الملكية والعقار والإيجار والتطوير",subs:[["الملكية والتسجيل",/عقار|عقارية|تسجيل عيني|ملكية عقارية/],["الإيجار والوساطة",/إيجار|وساطة عقارية/],["التطوير والتمويل العقاري",/تطوير عقاري|تمويل عقاري/]]},
+{id:"administrative",name:"القانون الإداري والحكومي",desc:"الوظيفة العامة والقرارات والعقود الحكومية",subs:[["الوظيفة العامة",/خدمة مدنية|موظفين|وظائف|موارد بشرية حكومية/],["القرارات والعقود الحكومية",/منافسات|مشتريات حكومية|عقود حكومية|قرارات إدارية/],["الرقابة والمساءلة",/ديوان المظالم|رقابة|نزاهة/]]},
+{id:"finance",name:"المالي والمصرفي",desc:"البنوك والتمويل والتأمين والأسواق المالية",subs:[["البنوك والتمويل",/بنوك|مصرف|تمويل|ائتمان/],["التأمين والمدفوعات",/تأمين|مدفوعات|دفع/],["الزكاة والضرائب والأسواق",/زكاة|ضريبة|ضرائب|أوراق مالية|سوق مالية/]]},
+{id:"iptech",name:"الملكية الفكرية والتقنية",desc:"المؤلف والعلامات والبيانات والتقنية",subs:[["الملكية الفكرية",/ملكية فكرية|علامات تجارية|براءات|مؤلف|مصنفات/],["البيانات والتقنية",/بيانات شخصية|أمن سيبراني|اتصالات|تجارة إلكترونية|إلكترونية/]]},
+{id:"health",name:"الصحة والبيئة",desc:"الصحة والمسؤولية الطبية والبيئة",subs:[["الصحة والمسؤولية الطبية",/صحي|صحة|مهن صحية|منشآت صحية|مزاولة المهن/],["البيئة والموارد",/بيئة|بيئي|مياه|موارد طبيعية/]]},
+{id:"other",name:"قطاعات ومجالات أخرى",desc:"تشريعات متخصصة لم تصنف ضمن المجالات السابقة",subs:[["النقل والطاقة والتعليم والسياحة",/نقل|طيران|بحري|طاقة|كهرباء|تعليم|سياحة|آثار/],["الجمعيات والقطاعات غير الربحية",/جمعيات|مؤسسات أهلية|غير ربحية/],["غير مصنف",/.*/]]}
+];
+const categoryFor=name=>{const n=normalize(name);for(const c of categories.filter(x=>x.id!=="other")){for(const s of c.subs){if(s[1].test(n))return {category:c.id,sub:s[0]}}}return {category:"other",sub:"غير مصنف"}};
+const categoryName=id=>categories.find(c=>c.id===id)?.name||"قطاعات ومجالات أخرى";
+let cat="all",articleCorpus=[],corpusReady=false,datasetCount=0,datasetLaws=0,datasetError=false,datasetGroups=[],selectedDatasetLaw="",selectedCategory="",selectedSub="";
 async function loadArticles(){
  const batches=await Promise.all(laws.map(async law=>{try{const response=await fetch(law.file);if(!response.ok)return[];const html=await response.text(),doc=new DOMParser().parseFromString(html,"text/html");return [...doc.querySelectorAll("#articles .article")].map((el,index)=>({origin:"site",law:law.name,file:law.file,anchor:"article-"+(index+1),title:el.querySelector("h2")?.textContent||law.name,text:el.querySelector("p")?.textContent||el.textContent,search:normalize((el.dataset.search||"")+" "+el.textContent)}));}catch(e){return[]}}));
  articleCorpus=batches.flat();
- try{
-  const response=await fetch("data/saudi-legal-moj.json",{cache:"no-store"});
-  if(!response.ok)throw new Error("HTTP "+response.status);
-  const records=await response.json();datasetCount=records.length;
-  const grouped=new Map();records.forEach(r=>{const name=r.law_name||"غير محدد";if(!grouped.has(name))grouped.set(name,{name,type:r.law_type||"غير محدد",count:0});grouped.get(name).count++;});
-  datasetGroups=[...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,"ar"));datasetLaws=datasetGroups.length;
-  records.forEach((r,index)=>{const title=[r.article_number,r.law_name].filter(Boolean).join(" — ")||"نص نظامي";const text=r.text||"";articleCorpus.push({origin:"dataset",law:r.law_name||"غير محدد",title,text,source:r.source||"",lawType:r.law_type||"",search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
- }catch(e){datasetError=true;console.warn("تعذر تحميل مجموعة البيانات القانونية:",e);}
- corpusReady=true;renderDatasetOverview();renderArticles();
+ try{const response=await fetch("data/saudi-legal-moj.json");if(!response.ok)throw new Error("HTTP "+response.status);const records=await response.json();datasetCount=records.length;
+ const grouped=new Map();records.forEach(r=>{const name=r.law_name||"غير محدد";if(!grouped.has(name)){const c=categoryFor(name);grouped.set(name,{name,type:r.law_type||"غير محدد",count:0,category:c.category,sub:c.sub});}grouped.get(name).count++;});
+ datasetGroups=[...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,"ar"));datasetLaws=datasetGroups.length;
+ records.forEach(r=>{const title=[r.article_number,r.law_name].filter(Boolean).join(" — ")||"نص نظامي";const text=r.text||"";const c=categoryFor(r.law_name||"");articleCorpus.push({origin:"dataset",law:r.law_name||"غير محدد",title,text,source:r.source||"",lawType:r.law_type||"",category:c.category,sub:c.sub,search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
+ }catch(e){datasetError=true;console.warn("تعذر تحميل مجموعة البيانات:",e);}
+ corpusReady=true;renderStats();renderHierarchy();renderArticles();
 }
-function renderDatasetOverview(){
- const stats=document.getElementById("datasetStats"),list=document.getElementById("datasetLaws");
- if(!stats||!list)return;
- const values=[[laws.length.toLocaleString("ar-SA"),"صفحات أنظمة مفهرسة بالموقع"],[datasetLaws.toLocaleString("ar-SA"),"تشريعاً في المجموعة"],[datasetCount.toLocaleString("ar-SA"),"سجلاً مستورداً"],[batchesSafeCount().toLocaleString("ar-SA"),"مادة في صفحات الموقع"],["0","سجلات تمت مطابقتها رسمياً"],[datasetCount.toLocaleString("ar-SA"),"سجلاً لم تتم مراجعته ومطابقته رسمياً"]];
- stats.replaceChildren();
- values.forEach(([value,label])=>{const card=document.createElement("div");card.className="stat-card";const strong=document.createElement("strong");strong.textContent=value;const span=document.createElement("span");span.textContent=label;card.append(strong,span);stats.append(card);});
- list.replaceChildren();
- datasetGroups.forEach(item=>{const card=document.createElement("article");card.className="dataset-law";const h=document.createElement("h3");h.textContent=item.name;const type=document.createElement("p");type.textContent="النوع: "+item.type;const count=document.createElement("p");count.textContent="عدد السجلات: "+item.count.toLocaleString("ar-SA");const status=document.createElement("p");status.className="dataset-warning";status.textContent="مستورَد — لم تتم المطابقة الرسمية";const button=document.createElement("button");button.type="button";button.textContent="البحث في مواد هذا التشريع";button.addEventListener("click",()=>{selectedDatasetLaw=item.name;q.value="";render();document.getElementById("articleResults").scrollIntoView({behavior:"smooth",block:"start"});});card.append(h,type,count,status,button);list.append(card);});
- if(!datasetGroups.length){const empty=document.createElement("p");empty.textContent=datasetError?"تعذر تحميل المجموعة المستوردة.":"لا توجد سجلات تشريعية لعرضها.";list.append(empty);}
+function renderStats(){const stats=document.getElementById("datasetStats");const vals=[[laws.length,"صفحات أنظمة مستقلة"],[datasetLaws,"اسماً لتشريع مستورد"],[datasetCount,"سجلاً مستورداً"],[articleCorpus.filter(x=>x.origin==="site").length,"مادة مفهرسة بصفحات الموقع"],[0,"سجلاً تمت مطابقته رسمياً"]];stats.replaceChildren();vals.forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-card";const s=document.createElement("strong");s.textContent=Number(v).toLocaleString("ar-SA");const p=document.createElement("span");p.textContent=l;d.append(s,p);stats.append(d);});}
+function renderHierarchy(){
+ const nav=document.getElementById("categoryNav"),sub=document.getElementById("subNav"),list=document.getElementById("lawList"),title=document.getElementById("hierarchyTitle"),path=document.getElementById("pathline"),back=document.getElementById("hierarchyBack");
+ nav.replaceChildren();sub.replaceChildren();list.replaceChildren();
+ const counts={};datasetGroups.forEach(d=>counts[d.category]=(counts[d.category]||0)+d.count);
+ categories.forEach(c=>{const b=document.createElement("button");b.className="category-card"+(selectedCategory===c.id?" active":"");b.type="button";const strong=document.createElement("strong");strong.textContent=c.name;const span=document.createElement("span");span.textContent=c.desc;const em=document.createElement("em");em.textContent=(datasetGroups.filter(d=>d.category===c.id).length).toLocaleString("ar-SA")+" تشريعاً";b.append(strong,span,em);b.addEventListener("click",()=>{selectedCategory=c.id;selectedSub="";selectedDatasetLaw="";renderHierarchy();renderArticles();});nav.append(b);});
+ if(!selectedCategory){title.textContent="اختر المجال الذي تريد تصفحه";path.textContent="المكتبة القانونية ← المجالات";back.hidden=true;return;}
+ const c=categories.find(x=>x.id===selectedCategory);title.textContent=c.name;path.textContent="المكتبة القانونية ← "+c.name;back.hidden=false;
+ c.subs.forEach(s=>{const docs=datasetGroups.filter(d=>d.category===c.id&&d.sub===s[0]);if(!docs.length)return;const b=document.createElement("button");b.type="button";b.className=selectedSub===s[0]?"active":"";b.textContent=s[0]+" ("+docs.length.toLocaleString("ar-SA")+")";b.addEventListener("click",()=>{selectedSub=s[0];selectedDatasetLaw="";renderHierarchy();renderArticles();});sub.append(b);});
+ if(selectedSub){const docs=datasetGroups.filter(d=>d.category===c.id&&d.sub===selectedSub);docs.forEach(d=>{const row=document.createElement("div");row.className="document-row";const info=document.createElement("div");const strong=document.createElement("strong");strong.textContent=d.name;const small=document.createElement("small");small.textContent=d.type+" · "+d.count.toLocaleString("ar-SA")+" سجل · تصنيف موضوعي آلي أولي";info.append(strong,small);const btn=document.createElement("button");btn.type="button";btn.textContent="عرض السجلات";btn.addEventListener("click",()=>{selectedDatasetLaw=d.name;renderArticles();document.getElementById("articleResults").scrollIntoView({behavior:"smooth",block:"start"});});row.append(info,btn);list.append(row);});}
+ else{const hint=document.createElement("p");hint.className="muted-note";hint.textContent="اختر تخصصاً من الأعلى لعرض التشريعات التابعة له.";list.append(hint);}
+ back.addEventListener("click",()=>{if(selectedSub){selectedSub="";}else{selectedCategory="";}selectedDatasetLaw="";renderHierarchy();renderArticles();},{once:true});
 }
 function renderArticles(){
- const target=document.getElementById("articleResults"),counter=document.getElementById("articleCount");
- if(!corpusReady){counter.textContent="جارٍ تحميل المواد والسجلات القانونية…";return}
- const term=normalize(q.value);
- const hits=selectedDatasetLaw?articleCorpus.filter(x=>x.origin==="dataset"&&x.law===selectedDatasetLaw):(term?articleCorpus.filter(x=>(x.origin==="dataset"||cat==="all"||laws.find(l=>l.file===x.file)?.cat===cat)&&x.search.includes(term)):[]);
- const importedHits=hits.filter(x=>x.origin==="dataset").length,siteHits=hits.length-importedHits;
- counter.textContent="إجمالي المجموعة: "+datasetCount.toLocaleString("ar-SA")+" سجل من "+datasetLaws.toLocaleString("ar-SA")+" تشريعاً · مواد صفحات الموقع: "+batchesSafeCount().toLocaleString("ar-SA")+(datasetError?" · تعذر تحميل ملف المجموعة":"")+(selectedDatasetLaw?" · التشريع المختار: "+selectedDatasetLaw+" · سجلاته: "+hits.length.toLocaleString("ar-SA"):(term?" · النتائج المطابقة: "+hits.length.toLocaleString("ar-SA")+" (المجموعة: "+importedHits.toLocaleString("ar-SA")+"، صفحات الموقع: "+siteHits.toLocaleString("ar-SA")+")":" · اكتب كلمة أو رقم مادة لعرض النتائج"));
- target.replaceChildren();
- hits.slice(0,100).forEach(hit=>{
-  const card=document.createElement("article");card.className="article-hit";
-  const h=document.createElement("h3");h.textContent=hit.title+" — "+hit.law;
-  const p=document.createElement("p");p.textContent=(hit.text||"").slice(0,1100)+(hit.text&&hit.text.length>1100?"…":"");
-  const a=document.createElement("a");
-  if(hit.origin==="site"){a.href=hit.file+"#"+hit.anchor;a.textContent="فتح صفحة النظام ←";}
-  else{a.href=hit.source==="moj.gov.sa"?"https://www.moj.gov.sa/":"https://laws.boe.gov.sa/";a.target="_blank";a.rel="noopener";a.textContent="المصدر المسجل في المجموعة: "+(hit.source||"غير محدد")+" — ليس توثيقاً للمطابقة ↗";}
-  card.append(h,p,a);target.append(card);
- });
- if(term&&!hits.length){const empty=document.createElement("p");empty.textContent="لا توجد نتيجة مطابقة. جرّب كلمة أخرى أو تحقق من المصدر الحكومي.";target.append(empty)}
+ const target=document.getElementById("articleResults"),counter=document.getElementById("articleCount");if(!corpusReady){counter.textContent="جارٍ تحميل المواد والسجلات القانونية…";return;}
+ const term=normalize(q.value);let hits=[];
+ if(selectedDatasetLaw)hits=articleCorpus.filter(x=>x.origin==="dataset"&&x.law===selectedDatasetLaw);
+ else if(term)hits=articleCorpus.filter(x=>x.search.includes(term));
+ else if(selectedCategory&&selectedSub)hits=articleCorpus.filter(x=>x.origin==="dataset"&&x.category===selectedCategory&&x.sub===selectedSub);
+ const imported=hits.filter(x=>x.origin==="dataset").length;
+ counter.textContent=selectedDatasetLaw?"التشريع المحدد: "+selectedDatasetLaw+" · "+imported.toLocaleString("ar-SA")+" سجل — غير مطابق رسمياً":term?"نتائج البحث: "+hits.length.toLocaleString("ar-SA")+" (المجموعة المستوردة: "+imported.toLocaleString("ar-SA")+")":selectedSub?"سجلات التخصص: "+hits.length.toLocaleString("ar-SA"):"اكتب عبارة للبحث أو اختر تشريعاً من المجالات أعلاه.";
+ target.replaceChildren();hits.slice(0,100).forEach(hit=>{const card=document.createElement("article");card.className="article-hit";const h=document.createElement("h3");h.textContent=hit.title+" — "+hit.law;const p=document.createElement("p");p.textContent=(hit.text||"").slice(0,1000)+(hit.text&&hit.text.length>1000?"…":"");const a=document.createElement("a");if(hit.origin==="site"){a.href=hit.file+"#"+hit.anchor;a.textContent="فتح صفحة النظام ←";}else{a.href="https://www.moj.gov.sa/";a.target="_blank";a.rel="noopener";a.textContent="المصدر المسجل: "+(hit.source||"غير محدد")+" · لم تتم المطابقة الرسمية ↗";}card.append(h,p,a);target.append(card);});
+ if(!hits.length&&(term||selectedDatasetLaw)){const p=document.createElement("p");p.textContent="لا توجد نتائج مطابقة في البيانات المحمّلة.";target.append(p);}
 }
-function batchesSafeCount(){return articleCorpus.filter(x=>x.origin==="site").length}
-function render(){const term=normalize(q.value);const found=laws.filter(x=>(cat==="all"||x.cat===cat)&&(!term||normalize([x.name,x.en,x.desc,x.keys,x.date].join(" ")).includes(term)));count.textContent="عدد الأنظمة: "+found.length+" من "+laws.length;out.innerHTML=selectedDatasetLaw?'<div class="empty">تم اختيار التشريع. تظهر سجلاته ومواده في قسم نتائج البحث أدناه.</div>':found.length?found.map(x=>'<article class="law"><span class="tag">'+({civil:"مدني وتجاري",labor:"عمل وشركات",family:"أحوال شخصية",procedure:"إثبات وتنفيذ"}[x.cat])+'</span><h2>'+x.name+'</h2><div class="en">'+x.en+'</div><p>'+x.desc+'</p><small>تاريخ النشر: '+x.date+'</small><div class="status">'+x.status+'</div><a href="'+x.file+'">عرض صفحة النظام والمواد المفهرسة ←</a><a href="'+x.url+'" target="_blank" rel="noopener">النص الكامل لدى المصدر الرسمي ↗</a></article>').join(""):'<div class="empty">لا توجد نتائج مطابقة. جرّب كلمة أخرى أو غيّر التصنيف.</div>';renderArticles()}
-q.addEventListener("input",()=>{selectedDatasetLaw="";render();});document.querySelectorAll("#filters button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("#filters button").forEach(x=>x.classList.remove("active"));b.classList.add("active");cat=b.dataset.cat;render()}));render();loadArticles();
+function renderFeatured(){const term=normalize(q.value);const found=laws.filter(x=>(!term||normalize([x.name,x.en,x.desc,x.keys].join(" ")).includes(term)));count.textContent="صفحات الأنظمة المستقلة: "+found.length+" من "+laws.length;out.innerHTML=found.map(x=>'<article class="law"><span class="tag">'+x.cat+'</span><h2>'+x.name+'</h2><div class="en">'+x.en+'</div><p>'+x.desc+'</p><small>تاريخ النشر: '+x.date+'</small><div class="status">'+x.status+'</div><a href="'+x.file+'">عرض الصفحة الحالية ←</a><a href="'+x.url+'" target="_blank" rel="noopener">المصدر الرسمي ↗</a></article>').join("")||'<div class="empty">لا توجد صفحات مطابقة.</div>';}
+document.getElementById("hierarchyBack").addEventListener("click",()=>{if(selectedSub)selectedSub="";else selectedCategory="";selectedDatasetLaw="";renderHierarchy();renderArticles();});
+q.addEventListener("input",()=>{selectedDatasetLaw="";selectedCategory="";selectedSub="";renderHierarchy();renderFeatured();renderArticles();});
+renderFeatured();loadArticles();
 </script>
 </body></html>
