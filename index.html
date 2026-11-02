@@ -36,7 +36,7 @@
     .approach-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px}.approach-list{border-top:1px solid var(--line)}.approach-item{display:flex;gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}.approach-item b{font:italic 20px var(--serif);color:var(--gold)}.approach-item h3{font:700 19px var(--serif);margin:0}.approach-item p{font-size:11px;color:var(--muted);margin:5px 0 0}
     .quote{background:var(--ink);color:white;text-align:center;padding:78px 20px}.quote-mark{font:70px var(--serif);color:var(--gold);line-height:1}.quote blockquote{font:400 clamp(24px,3vw,36px)/1.8 var(--serif);max-width:820px;margin:10px auto 20px}.quote small{font-size:10px;color:#b5c0b7}
     .articles{background:var(--white)}.articles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.article{border:1px solid var(--line);padding:25px;min-height:210px}.article small{color:#a1814f;font-size:10px}.article h3{font:700 21px var(--serif);margin:12px 0}.article p{font-size:11px;color:var(--muted)}
-    .contact{background:#eeece5}.contact-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px}.contact-card{background:var(--ink);color:white;padding:38px}.contact-card h3{font:700 27px var(--serif);margin:0 0 14px}.contact-card p{font-size:12px;color:#c3cdc5}.contact-line{border-top:1px solid rgba(255,255,255,.16);padding:17px 0;font-size:12px}.contact-line span{display:block;color:var(--gold2);font-size:10px;margin-bottom:5px}.contact-form{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;color:#626c64}.field input,.field textarea,.field select{background:var(--white);border:1px solid #ddd8cd;padding:13px;font:12px var(--sans);color:var(--ink);outline:none}.field textarea{min-height:125px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold)}
+    .contact{background:#eeece5}.contact-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px}.contact-card{background:var(--ink);color:white;padding:38px}.contact-card h3{font:700 27px var(--serif);margin:0 0 14px}.contact-card p{font-size:12px;color:#c3cdc5}.contact-line{border-top:1px solid rgba(255,255,255,.16);padding:17px 0;font-size:12px}.contact-line span{display:block;color:var(--gold2);font-size:10px;margin-bottom:5px}.contact-form{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:11px;color:#626c64}.field input,.field textarea,.field select{background:var(--white);border:1px solid #ddd8cd;padding:13px;font:12px var(--sans);color:var(--ink);outline:none}.field textarea{min-height:210px;resize:vertical;line-height:1.9}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold)}
     footer{background:#101e19;color:#c3cdc5;padding:35px 0}.footer-top{display:flex;justify-content:space-between;align-items:center;gap:20px}.footer-brand{font:700 21px var(--serif);color:white}.footer-links{display:flex;gap:20px;font-size:10px}.footer-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:25px;padding-top:20px;display:flex;justify-content:space-between;gap:15px;font-size:9px;color:#8f9c93}.disclaimer{max-width:760px}
     @media(max-width:850px){.navlinks{display:none;position:absolute;top:87px;right:0;left:0;background:var(--paper);padding:22px;flex-direction:column;align-items:stretch;border-bottom:1px solid var(--line)}.navlinks.open{display:flex}.menu-btn{display:block}.nav-cta{display:none}.hero-grid{grid-template-columns:1fr;gap:30px;padding:70px 0}.hero{min-height:auto}.hero-copy{text-align:center}.eyebrow,.hero-actions,.hero-note{justify-content:center}.hero p{margin:auto}.portrait-wrap{height:330px}.portrait-frame{height:300px;width:245px}.portrait-caption{right:-25px}.strip-grid{grid-template-columns:1fr;gap:14px}.strip-item{border:0;border-bottom:1px solid var(--line);padding:12px 0}.about-grid,.approach-grid,.contact-grid{grid-template-columns:1fr;gap:35px}.about-art{height:280px}.services-grid,.articles-grid{grid-template-columns:1fr 1fr}.footer-top,.footer-bottom{align-items:flex-start;flex-direction:column}}
     @media(max-width:540px){.container{width:min(100% - 30px,1160px)}section{padding:70px 0}.services-grid,.articles-grid{grid-template-columns:1fr}.contact-form{grid-template-columns:1fr}.field.full{grid-column:auto}.hero h1{font-size:48px}.hero p{font-size:12px}.portrait-wrap{height:300px}.strip-item{padding:8px 0}.footer-links{flex-wrap:wrap}}
@@ -179,10 +179,10 @@ body.day-mode .services{background:#eeece5}body.day-mode .service{background:lin
         <div class="field"><label for="name">الاسم</label><input id="name" name="name" maxlength="100" placeholder="الاسم الكريم" autocomplete="name" required></div>
         <div class="field"><label for="phone">رقم التواصل</label><input id="phone" name="phone" type="tel" inputmode="tel" maxlength="20" placeholder="05xxxxxxxx" autocomplete="tel" required></div>
         <div class="field full"><label for="topic">نوع الطلب</label><select id="topic" name="topic" required><option value="طلب موعد استشارة">طلب موعد استشارة</option><option value="استفسار عن خدمة">استفسار عن خدمة</option><option value="استفسار عام">استفسار عام</option></select></div>
-        <div class="field full"><label for="message">نبذة مختصرة عن الطلب (باللغة العربية)</label><textarea id="message" name="message" minlength="10" maxlength="2000" placeholder="اكتب نبذة باللغة العربية، ولا تدرج معلومات سرية أو بيانات حساسة." required></textarea></div>
-        <div class="field full"><label for="attachment">المرفق (إلزامي) — PDF أو JPG أو PNG، بحد أقصى 5 ميجابايت</label><input id="attachment" name="attachment" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required></div>
+        <div class="field full"><label for="message">نبذة مختصرة عن الطلب (باللغة العربية)</label><textarea id="message" name="message" rows="8" minlength="10" maxlength="2000" placeholder="اكتب نبذة باللغة العربية، ولا تدرج معلومات سرية أو بيانات حساسة." required></textarea></div>
+        <div class="field full"><label for="attachment">إرفاق ملف (اختياري) — PDF أو JPG أو PNG، بحد أقصى 5 ميجابايت</label><input id="attachment" name="attachment" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><small id="attachmentName" style="color:#777;font-size:10px">لم يتم اختيار ملف</small><button type="button" id="clearAttachment" class="btn" style="padding:7px 13px;font-size:10px" hidden>إلغاء الملف ×</button></div></div>
         <div class="field" style="position:absolute;right:-10000px;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label for="website">اترك هذا الحقل فارغاً</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
-        <div class="field full"><button class="btn" id="contactSubmit" type="submit">إرسال الطلب ←</button><small id="contactStatus" role="status" aria-live="polite" style="color:#777;font-size:10px">لن يُقبل الطلب دون مرفق صالح ونص عربي. الملفات تُفحص أمنياً قبل الإرسال.</small></div>
+        <div class="field full"><button class="btn" id="contactSubmit" type="submit">إرسال الطلب ←</button><small id="contactStatus" role="status" aria-live="polite" style="color:#777;font-size:10px">المرفق اختياري. إذا أرفقت ملفاً فسيُفحص أمنياً قبل الإرسال.</small></div>
       </form>
     </div>
   </div></section>
@@ -220,6 +220,10 @@ body.day-mode .services{background:#eeece5}body.day-mode .service{background:lin
  const tokenField=document.getElementById('contactCsrf');
  const message=document.getElementById('message');
  const attachment=document.getElementById('attachment');
+ const attachmentName=document.getElementById('attachmentName');
+ const clearAttachment=document.getElementById('clearAttachment');
+ attachment.addEventListener('change',()=>{const file=attachment.files[0];attachmentName.textContent=file?file.name+' ('+Math.ceil(file.size/1024)+' KB)':'لم يتم اختيار ملف';clearAttachment.hidden=!file;});
+ clearAttachment.addEventListener('click',()=>{attachment.value='';attachmentName.textContent='لم يتم اختيار ملف';clearAttachment.hidden=true;});
  async function refreshToken(){
    try{
      const response=await fetch('contact-submit.php?token=1',{credentials:'same-origin',cache:'no-store',headers:{'Accept':'application/json'}});
@@ -238,7 +242,6 @@ body.day-mode .services{background:#eeece5}body.day-mode .service{background:lin
    event.preventDefault();
    if(!arabicOnly(message.value)){message.setCustomValidity('يرجى كتابة نص الرسالة باللغة العربية فقط.');message.reportValidity();return;}
    message.setCustomValidity('');
-   if(!attachment.files.length){attachment.setCustomValidity('إرفاق ملف واحد على الأقل إلزامي.');attachment.reportValidity();return;}
    attachment.setCustomValidity('');
    if(!form.reportValidity())return;
    submit.disabled=true;status.textContent='جارٍ فحص الطلب والمرفق وإرساله بأمان…';
@@ -247,7 +250,7 @@ body.day-mode .services{background:#eeece5}body.day-mode .service{background:lin
      const data=await response.json().catch(()=>({ok:false,message:'تعذر قراءة رد الخادم.'}));
      if(!response.ok||!data.ok)throw new Error(data.message||'تعذر إرسال الطلب.');
      status.textContent=data.message||'تم إرسال طلبك بنجاح.';
-     form.reset();await refreshToken();
+     form.reset();attachmentName.textContent='لم يتم اختيار ملف';clearAttachment.hidden=true;await refreshToken();
    }catch(error){
      status.textContent=error.message||'تعذر إرسال الطلب. يرجى المحاولة لاحقاً.';
      await refreshToken();
