@@ -193,7 +193,7 @@ fclose($rateHandle);
 /* Send a plain message when no file is attached; use MIME only for a scanned attachment. */
 $to = 'info@hissah.sa';
 $subject = 'طلب تواصل جديد من الموقع';
-$bodyText = "طلب تواصل جديد\\n\\nالاسم: {$name}\\nرقم التواصل: {$phone}\\nنوع الطلب: {$topic}\\n\\nالرسالة:\\n{$message}\\n";
+$bodyText = "طلب تواصل جديد\n\nالاسم: {$name}\nرقم التواصل: {$phone}\nنوع الطلب: {$topic}\n\nالرسالة:\n{$message}\n";
 $headers = [
     'From: Hissah Website <info@hissah.sa>',
     'MIME-Version: 1.0'
@@ -201,21 +201,21 @@ $headers = [
 if ($hasAttachment) {
     $boundary = '=_Hissah_' . bin2hex(random_bytes(18));
     $cleanName = 'attachment.' . ($extension === 'jpeg' ? 'jpg' : $extension);
-    $body = "--{$boundary}\\r\\n";
-    $body .= "Content-Type: text/plain; charset=UTF-8\\r\\nContent-Transfer-Encoding: 8bit\\r\\n\\r\\n";
-    $body .= $bodyText . "\\r\\n";
-    $body .= "--{$boundary}\\r\\n";
-    $body .= "Content-Type: {$mime}; name=\\"{$cleanName}\\"\\r\\n";
-    $body .= "Content-Transfer-Encoding: base64\\r\\n";
-    $body .= "Content-Disposition: attachment; filename=\\"{$cleanName}\\"\\r\\n\\r\\n";
-    $body .= chunk_split(base64_encode((string)file_get_contents($file['tmp_name']))) . "\\r\\n";
-    $body .= "--{$boundary}--\\r\\n";
+    $body = "--{$boundary}\r\n";
+    $body .= "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n";
+    $body .= $bodyText . "\r\n";
+    $body .= "--{$boundary}\r\n";
+    $body .= "Content-Type: {$mime}; name=\"{$cleanName}\"\r\n";
+    $body .= "Content-Transfer-Encoding: base64\r\n";
+    $body .= "Content-Disposition: attachment; filename=\"{$cleanName}\"\r\n\r\n";
+    $body .= chunk_split(base64_encode((string)file_get_contents($file['tmp_name']))) . "\r\n";
+    $body .= "--{$boundary}--\r\n";
     $headers[] = 'Content-Type: multipart/mixed; boundary="' . $boundary . '"';
 } else {
     $body = $bodyText;
     $headers[] = 'Content-Type: text/plain; charset=UTF-8';
 }
-$sent = @mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\\r\\n", $headers));
+$sent = @mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
 if (!$sent) {
     error_log('Hissah contact mail() failed.');
     reply(502, ['ok' => false, 'message' => 'تعذر تسليم الطلب للبريد حالياً. يرجى المحاولة لاحقاً.']);
