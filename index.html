@@ -231,7 +231,7 @@ body.day-mode .services{background:#eeece5}body.day-mode .service{background:lin
  }
  function arabicOnly(value){
    const trimmed=value.trim();
-   return /[\\u0600-\\u06FF]/.test(trimmed) && !/[A-Za-z\\u00C0-\\u024F]/.test(trimmed) && !/[^\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\s0-9٠-٩،؛؟!.,:()\\-ـ]/u.test(trimmed);
+   return /[\u0600-\u06FF]/.test(trimmed) && !/[A-Za-z\u00C0-\u024F]/.test(trimmed) && !/[^\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\s0-9٠-٩،؛؟!.,:()\-ـ]/u.test(trimmed);
  }
  message.addEventListener('input',()=>{message.setCustomValidity(arabicOnly(message.value)?'':'يرجى كتابة نص الرسالة باللغة العربية فقط.');});
  form.addEventListener('submit',async function(event){
