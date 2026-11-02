@@ -97,63 +97,71 @@ if ($messageLength === false || $messageLength < 10 || $messageLength > 2000
     reply(422, ['ok' => false, 'message' => 'اكتب نص الرسالة بالعربية فقط، من 10 إلى 2000 حرف.']);
 }
 
-/* Exactly one required attachment; allow only PDF, JPEG and PNG up to 5 MB. */
-if (!isset($_FILES['attachment']) || !is_array($_FILES['attachment'])) {
-    reply(422, ['ok' => false, 'message' => 'إرفاق ملف واحد إلزامي.']);
-}
-$file = $_FILES['attachment'];
-if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'] ?? '')
-    || (int)($file['size'] ?? 0) < 1 || (int)$file['size'] > 5 * 1024 * 1024) {
-    reply(422, ['ok' => false, 'message' => 'تعذر قبول المرفق. الحد الأقصى 5 ميجابايت، ويجب إرفاق ملف واحد.']);
-}
-$originalName = (string)($file['name'] ?? '');
-$extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-$allowed = [
-    'pdf' => ['application/pdf'],
-    'jpg' => ['image/jpeg'],
-    'jpeg' => ['image/jpeg'],
-    'png' => ['image/png']
-];
-if (!isset($allowed[$extension])) {
-    reply(415, ['ok' => false, 'message' => 'نوع الملف غير مسموح. الأنواع المقبولة PDF وJPG وPNG فقط.']);
-}
-$finfo = new finfo(FILEINFO_MIME_TYPE);
-$mime = $finfo->file($file['tmp_name']);
-if (!in_array($mime, $allowed[$extension], true)) {
-    reply(415, ['ok' => false, 'message' => 'امتداد الملف لا يطابق محتواه الفعلي.']);
-}
-$handle = fopen($file['tmp_name'], 'rb');
-$signature = $handle ? fread($handle, 8) : '';
-if ($handle) fclose($handle);
-$signatureOk = ($mime === 'application/pdf' && strncmp($signature, '%PDF-', 5) === 0)
-    || ($mime === 'image/png' && substr($signature, 0, 8) === "\x89PNG\r\n\x1a\n")
-    || ($mime === 'image/jpeg' && substr($signature, 0, 3) === "\xFF\xD8\xFF");
-if (!$signatureOk) {
-    reply(415, ['ok' => false, 'message' => 'تعذر التحقق من سلامة صيغة المرفق.']);
-}
+/* Attachments are optional. If supplied, validate and scan before mailing. */
+$hasAttachment = isset($_FILES['attachment']) && is_array($_FILES['attachment'])
+    && (int)($_FILES['attachment']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
+$file = null;
+$mime = null;
+$extension = null;
+if ($hasAttachment) {
+    $file = $_FILES['attachment'];
+    if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($file['tmp_name'] ?? '')
+        || (int)($file['size'] ?? 0) < 1 || (int)$file['size'] > 5 * 1024 * 1024) {
+        reply(422, ['ok' => false, 'message' => 'تعذر قبول المرفق. الحد الأقصى 5 ميجابايت. يمكنك الإرسال دون مرفق.']);
+    }
+    $originalName = (string)($file['name'] ?? '');
+    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    $allowed = [
+        'pdf' => ['application/pdf'],
+        'jpg' => ['image/jpeg'],
+        'jpeg' => ['image/jpeg'],
+        'png' => ['image/png']
+    ];
+    if (!isset($allowed[$extension])) {
+        reply(415, ['ok' => false, 'message' => 'نوع الملف غير مسموح. الأنواع المقبولة PDF وJPG وPNG فقط.']);
+    }
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($file['tmp_name']);
+    if (!in_array($mime, $allowed[$extension], true)) {
+        reply(415, ['ok' => false, 'message' => 'امتداد الملف لا يطابق محتواه الفعلي.']);
+    }
+    $handle = fopen($file['tmp_name'], 'rb');
+    $signature = $handle ? fread($handle, 8) : '';
+    if ($handle) fclose($handle);
+    $signatureOk = ($mime === 'application/pdf' && strncmp($signature, '%PDF-', 5) === 0)
+        || ($mime === 'image/png' && substr($signature, 0, 8) === "\x89PNG\r\n\x1a\n")
+        || ($mime === 'image/jpeg' && substr($signature, 0, 3) === "\xFF\xD8\xFF");
+    if (!$signatureOk) {
+        reply(415, ['ok' => false, 'message' => 'تعذر التحقق من سلامة صيغة المرفق.']);
+    }
 
-/* Malware scan is mandatory. Never accept an attachment when ClamAV is missing or fails. */
-$scanner = null;
-foreach (['/usr/bin/clamdscan', '/usr/local/bin/clamdscan', '/usr/bin/clamscan', '/usr/local/bin/clamscan'] as $candidate) {
-    if (is_executable($candidate)) { $scanner = $candidate; break; }
-}
-if ($scanner === null || !function_exists('proc_open')) {
-    reply(503, ['ok' => false, 'message' => 'فحص المرفقات الأمني غير متاح حالياً. يرجى التواصل هاتفياً أو المحاولة لاحقاً.']);
-}
-$descriptors = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
-$process = @proc_open([$scanner, '--no-summary', $file['tmp_name']], $descriptors, $pipes);
-if (!is_resource($process)) {
-    reply(503, ['ok' => false, 'message' => 'تعذر تشغيل فحص المرفقات الأمني. يرجى المحاولة لاحقاً.']);
-}
-fclose($pipes[0]);
-$scanOutput = stream_get_contents($pipes[1]);
-$scanError = stream_get_contents($pipes[2]);
-fclose($pipes[1]);
-fclose($pipes[2]);
-$scanCode = proc_close($process);
-if ($scanCode !== 0) {
-    error_log('Hissah contact attachment scan rejected; scanner exit=' . $scanCode);
-    reply(422, ['ok' => false, 'message' => 'لم يجتز المرفق الفحص الأمني أو تعذر فحصه. لم يتم إرسال الطلب.']);
+    /* Scan uploaded files only. A clean result is exit code 0; infected is 1; scanner error is 2. */
+    $scanner = null;
+    foreach (['/usr/bin/clamscan', '/usr/local/bin/clamscan', '/usr/bin/clamdscan', '/usr/local/bin/clamdscan'] as $candidate) {
+        if (is_executable($candidate)) { $scanner = $candidate; break; }
+    }
+    if ($scanner === null || !function_exists('proc_open')) {
+        reply(503, ['ok' => false, 'message' => 'فحص المرفقات غير متاح حالياً. يمكنك إعادة الإرسال دون إرفاق ملف.']);
+    }
+    $descriptors = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+    $process = @proc_open([$scanner, '--no-summary', $file['tmp_name']], $descriptors, $pipes);
+    if (!is_resource($process)) {
+        reply(503, ['ok' => false, 'message' => 'تعذر تشغيل فحص المرفق. يمكنك إعادة الإرسال دون إرفاق ملف.']);
+    }
+    fclose($pipes[0]);
+    $scanOutput = stream_get_contents($pipes[1]);
+    $scanError = stream_get_contents($pipes[2]);
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    $scanCode = proc_close($process);
+    if ($scanCode === 1) {
+        error_log('Hissah contact attachment detected as infected.');
+        reply(422, ['ok' => false, 'message' => 'اكتشف الفحص خطراً في المرفق، لذلك لم يتم إرساله. يمكنك الإرسال دون مرفق.']);
+    }
+    if ($scanCode !== 0) {
+        error_log('Hissah contact attachment scan error; scanner exit=' . $scanCode . '; ' . substr((string)$scanError, 0, 500));
+        reply(503, ['ok' => false, 'message' => 'تعذر إكمال الفحص الأمني للمرفق. يمكنك إعادة الإرسال دون إرفاق ملف.']);
+    }
 }
 
 /* Basic IP rate limit: at most 3 accepted attempts in 10 minutes. */
@@ -182,27 +190,32 @@ fflush($rateHandle);
 flock($rateHandle, LOCK_UN);
 fclose($rateHandle);
 
-/* Mail the clean attachment; use a fixed filename and fixed headers. */
+/* Send a plain message when no file is attached; use MIME only for a scanned attachment. */
 $to = 'info@hissah.sa';
 $subject = 'طلب تواصل جديد من الموقع';
-$boundary = '=_Hissah_' . bin2hex(random_bytes(18));
-$cleanName = 'attachment.' . ($extension === 'jpeg' ? 'jpg' : $extension);
-$bodyText = "طلب تواصل جديد\n\nالاسم: {$name}\nرقم التواصل: {$phone}\nنوع الطلب: {$topic}\n\nالرسالة:\n{$message}\n";
-$body = "--{$boundary}\r\n";
-$body .= "Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n";
-$body .= $bodyText . "\r\n";
-$body .= "--{$boundary}\r\n";
-$body .= "Content-Type: {$mime}; name=\"{$cleanName}\"\r\n";
-$body .= "Content-Transfer-Encoding: base64\r\n";
-$body .= "Content-Disposition: attachment; filename=\"{$cleanName}\"\r\n\r\n";
-$body .= chunk_split(base64_encode((string)file_get_contents($file['tmp_name']))) . "\r\n";
-$body .= "--{$boundary}--\r\n";
+$bodyText = "طلب تواصل جديد\\n\\nالاسم: {$name}\\nرقم التواصل: {$phone}\\nنوع الطلب: {$topic}\\n\\nالرسالة:\\n{$message}\\n";
 $headers = [
-    'MIME-Version: 1.0',
     'From: Hissah Website <info@hissah.sa>',
-    'Content-Type: multipart/mixed; boundary="' . $boundary . '"'
+    'MIME-Version: 1.0'
 ];
-$sent = @mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers));
+if ($hasAttachment) {
+    $boundary = '=_Hissah_' . bin2hex(random_bytes(18));
+    $cleanName = 'attachment.' . ($extension === 'jpeg' ? 'jpg' : $extension);
+    $body = "--{$boundary}\\r\\n";
+    $body .= "Content-Type: text/plain; charset=UTF-8\\r\\nContent-Transfer-Encoding: 8bit\\r\\n\\r\\n";
+    $body .= $bodyText . "\\r\\n";
+    $body .= "--{$boundary}\\r\\n";
+    $body .= "Content-Type: {$mime}; name=\\"{$cleanName}\\"\\r\\n";
+    $body .= "Content-Transfer-Encoding: base64\\r\\n";
+    $body .= "Content-Disposition: attachment; filename=\\"{$cleanName}\\"\\r\\n\\r\\n";
+    $body .= chunk_split(base64_encode((string)file_get_contents($file['tmp_name']))) . "\\r\\n";
+    $body .= "--{$boundary}--\\r\\n";
+    $headers[] = 'Content-Type: multipart/mixed; boundary="' . $boundary . '"';
+} else {
+    $body = $bodyText;
+    $headers[] = 'Content-Type: text/plain; charset=UTF-8';
+}
+$sent = @mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\\r\\n", $headers));
 if (!$sent) {
     error_log('Hissah contact mail() failed.');
     reply(502, ['ok' => false, 'message' => 'تعذر تسليم الطلب للبريد حالياً. يرجى المحاولة لاحقاً.']);
