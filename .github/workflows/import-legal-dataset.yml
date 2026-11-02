@@ -1,0 +1,41 @@
+name: Import Saudi Legal Dataset
+
+on:
+  push:
+    paths:
+      - ".github/workflows/import-legal-dataset.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download and validate dataset
+        run: |
+          set -euo pipefail
+          mkdir -p library/data
+          curl --fail --location --retry 3 --retry-delay 5 \
+            "https://huggingface.co/datasets/WafaaFraih/saudi-legal-moj/resolve/refs%2Fconvert%2Fparquet/default/train/0000.parquet" \
+            --output library/data/saudi-legal-moj.parquet
+          test "$(stat -c%s library/data/saudi-legal-moj.parquet)" -gt 100000
+          head -c 4 library/data/saudi-legal-moj.parquet | grep -q 'PAR1'
+          tail -c 4 library/data/saudi-legal-moj.parquet | grep -q 'PAR1'
+
+      - name: Commit dataset
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add library/data/saudi-legal-moj.parquet
+          if git diff --cached --quiet; then
+            echo "Dataset already up to date"
+            exit 0
+          fi
+          git commit -m "Add Saudi legal MOJ dataset"
+          git push
