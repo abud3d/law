@@ -174,12 +174,15 @@ body.day-mode .services{background:#eeece5}body.day-mode .service{background:lin
     <div class="section-head"><div class="section-kicker">تواصل مهني</div><h2 class="section-title">مكتب حصة عبدالعزيز آل علي للمحاماة والاستشارات القانونية</h2><p class="section-desc">للاستفسارات وطلبات التواصل: info@hissah.sa</p></div>
     <div class="contact-grid">
       <div class="contact-card"><h3>حصة عبدالعزيز آل علي</h3><p>للاستفسارات وطلبات المواعيد، ستُتاح قنوات التواصل المعتمدة هنا بعد إضافتها.</p><div class="contact-line"><span>البريد الإلكتروني</span><a href="mailto:info@hissah.sa" dir="ltr">info@hissah.sa</a></div><div class="contact-line"><span>رقم التواصل</span>يُضاف رقم العمل</div><div class="contact-line"><span>موقع المكتب</span>الرياض</div><div class="contact-line"><span>رقم الترخيص المهني</span><strong dir="ltr">44641</strong></div><div class="contact-socials"><span>البريد <em dir="ltr">info@hissah.sa</em></span><span>الموقع الرسمي <em dir="ltr">hissah.sa</em></span><span>LinkedIn <em>يُضاف الرابط عند اعتماده</em></span><span>X <em>يُضاف الحساب عند اعتماده</em></span></div></div>
-      <form class="contact-form" onsubmit="event.preventDefault();alert('نموذج الواجهة جاهز، وسيتم ربطه ببريد المحامية أو نظام استقبال الطلبات بعد تزويدنا ببيانات التواصل.');">
-        <div class="field"><label for="name">الاسم</label><input id="name" name="name" placeholder="الاسم الكريم" required></div>
-        <div class="field"><label for="phone">رقم التواصل</label><input id="phone" name="phone" type="tel" placeholder="05xxxxxxxx" required></div>
-        <div class="field full"><label for="topic">نوع الطلب</label><select id="topic" name="topic"><option>طلب موعد استشارة</option><option>استفسار عن خدمة</option><option>استفسار عام</option></select></div>
-        <div class="field full"><label for="message">نبذة مختصرة عن الطلب</label><textarea id="message" name="message" placeholder="يرجى عدم إدراج معلومات سرية أو مستندات حساسة في هذا النموذج."></textarea></div>
-        <div class="field full"><button class="btn" type="submit">إرسال الطلب ←</button><small style="color:#777;font-size:9px">لن يتم إرسال البيانات فعلياً قبل ربط النموذج بقناة آمنة ومعتمدة.</small></div>
+      <form class="contact-form" id="contactForm" action="contact-submit.php" method="post" enctype="multipart/form-data" novalidate>
+        <input type="hidden" name="csrf_token" id="contactCsrf">
+        <div class="field"><label for="name">الاسم</label><input id="name" name="name" maxlength="100" placeholder="الاسم الكريم" autocomplete="name" required></div>
+        <div class="field"><label for="phone">رقم التواصل</label><input id="phone" name="phone" type="tel" inputmode="tel" maxlength="20" placeholder="05xxxxxxxx" autocomplete="tel" required></div>
+        <div class="field full"><label for="topic">نوع الطلب</label><select id="topic" name="topic" required><option value="طلب موعد استشارة">طلب موعد استشارة</option><option value="استفسار عن خدمة">استفسار عن خدمة</option><option value="استفسار عام">استفسار عام</option></select></div>
+        <div class="field full"><label for="message">نبذة مختصرة عن الطلب (باللغة العربية)</label><textarea id="message" name="message" minlength="10" maxlength="2000" placeholder="اكتب نبذة باللغة العربية، ولا تدرج معلومات سرية أو بيانات حساسة." required></textarea></div>
+        <div class="field full"><label for="attachment">المرفق (إلزامي) — PDF أو JPG أو PNG، بحد أقصى 5 ميجابايت</label><input id="attachment" name="attachment" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required></div>
+        <div class="field" style="position:absolute;right:-10000px;width:1px;height:1px;overflow:hidden" aria-hidden="true"><label for="website">اترك هذا الحقل فارغاً</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <div class="field full"><button class="btn" id="contactSubmit" type="submit">إرسال الطلب ←</button><small id="contactStatus" role="status" aria-live="polite" style="color:#777;font-size:10px">لن يُقبل الطلب دون مرفق صالح ونص عربي. الملفات تُفحص أمنياً قبل الإرسال.</small></div>
       </form>
     </div>
   </div></section>
@@ -208,5 +211,49 @@ body.day-mode .services{background:#eeece5}body.day-mode .service{background:lin
   updateClock();setInterval(updateClock,1000);
 
 </script>
-</body>
+\n<script>
+(function(){
+ const form=document.getElementById('contactForm');
+ if(!form)return;
+ const status=document.getElementById('contactStatus');
+ const submit=document.getElementById('contactSubmit');
+ const tokenField=document.getElementById('contactCsrf');
+ const message=document.getElementById('message');
+ const attachment=document.getElementById('attachment');
+ async function refreshToken(){
+   try{
+     const response=await fetch('contact-submit.php?token=1',{credentials:'same-origin',cache:'no-store',headers:{'Accept':'application/json'}});
+     const data=await response.json();
+     if(!response.ok||!data.token)throw new Error('token');
+     tokenField.value=data.token;
+     return true;
+   }catch(e){status.textContent='تعذر تجهيز نموذج الإرسال الآمن. يرجى تحديث الصفحة أو المحاولة لاحقاً.';submit.disabled=true;return false;}
+ }
+ function arabicOnly(value){
+   const trimmed=value.trim();
+   return /[\\u0600-\\u06FF]/.test(trimmed) && !/[A-Za-z\\u00C0-\\u024F]/.test(trimmed) && !/[^\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\s0-9٠-٩،؛؟!.,:()\\-ـ]/u.test(trimmed);
+ }
+ message.addEventListener('input',()=>{message.setCustomValidity(arabicOnly(message.value)?'':'يرجى كتابة نص الرسالة باللغة العربية فقط.');});
+ form.addEventListener('submit',async function(event){
+   event.preventDefault();
+   if(!arabicOnly(message.value)){message.setCustomValidity('يرجى كتابة نص الرسالة باللغة العربية فقط.');message.reportValidity();return;}
+   message.setCustomValidity('');
+   if(!attachment.files.length){attachment.setCustomValidity('إرفاق ملف واحد على الأقل إلزامي.');attachment.reportValidity();return;}
+   attachment.setCustomValidity('');
+   if(!form.reportValidity())return;
+   submit.disabled=true;status.textContent='جارٍ فحص الطلب والمرفق وإرساله بأمان…';
+   try{
+     const response=await fetch(form.action,{method:'POST',body:new FormData(form),credentials:'same-origin',headers:{'Accept':'application/json'}});
+     const data=await response.json().catch(()=>({ok:false,message:'تعذر قراءة رد الخادم.'}));
+     if(!response.ok||!data.ok)throw new Error(data.message||'تعذر إرسال الطلب.');
+     status.textContent=data.message||'تم إرسال طلبك بنجاح.';
+     form.reset();await refreshToken();
+   }catch(error){
+     status.textContent=error.message||'تعذر إرسال الطلب. يرجى المحاولة لاحقاً.';
+     await refreshToken();
+   }finally{submit.disabled=false;}
+ });
+ refreshToken();
+})();
+</script>\n</body>
 </html>
