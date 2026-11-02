@@ -32,7 +32,7 @@
 .hierarchy-panel{background:#fffefa;border:1px solid var(--line);border-radius:9px;padding:18px;margin:16px 0 28px}.hierarchy-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.hierarchy-heading h3{font-size:17px;margin:0}.law-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
 .dataset-law{padding:15px}.dataset-law h3{font-size:14px}.dataset-law button{font-size:11px}.dataset-warning{line-height:1.8}
 .document-row{border:1px solid var(--line);background:#fff;border-radius:7px;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:12px}.document-row strong{font-size:13px}.document-row small{display:block;color:var(--muted);font-size:11px}.document-row button{white-space:nowrap;border:1px solid var(--line);background:#f7f4ec;color:var(--green);border-radius:5px;padding:7px 10px;font:inherit;font-size:11px;cursor:pointer}
-.pathline{font-size:11px;color:#8b7044;margin:8px 0}.featured-section{margin:34px 0}.featured-section .grid{margin-top:14px}
+.pathline{font-size:11px;color:#8b7044;margin:8px 0}
 @media(max-width:850px){.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.category-grid,.law-list{grid-template-columns:1fr}.hierarchy-panel{padding:13px}.document-row{align-items:flex-start;flex-direction:column}.document-row button{width:100%}}
 
@@ -73,7 +73,7 @@
 </main>
 <footer class="site-footer"><div class="site-wrap"><div class="site-footer-top"><div><strong>حصة آل علي</strong><div>المكتبة القانونية السعودية</div></div><nav class="site-footer-links"><a href="../index.html">الرئيسية</a><a href="index.html">فهرس الأنظمة</a><a href="../index.html#faq">الأسئلة الشائعة</a><a href="../index.html#official">المراجع الحكومية</a><a href="../index.html#contact">التواصل</a></nav></div><div class="site-footer-bottom">النصوص النظامية يُرجع فيها إلى المصدر الحكومي الرسمي، والمحتوى للتوعية العامة ولا يمثل استشارة قانونية مخصصة. لا تعني روابط الجهات وجود شراكة أو اعتماد منها.</div></div></footer>
 <script>
-const q=document.getElementById("q"),out=document.getElementById("results"),count=document.getElementById("count");
+const q=document.getElementById("q");
 const normalize=s=>(s||"").toLocaleLowerCase("ar").normalize("NFD").replace(/[\\u064B-\\u065F\\u0670\\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").trim();
 const categories=[
 {id:"civil",name:"القانون المدني",desc:"الالتزامات والعقود والحقوق والتعويض",subs:[["الالتزامات والعقود",/معاملات مدنية|التزامات|عقود|بيع|إيجار|مقاولة/],["المسؤولية والتعويض",/مسؤولية|تعويض|ضرر|ضمان/],["الحقوق والأموال",/ملكية|حقوق عينية|أموال|رهن/]]},
