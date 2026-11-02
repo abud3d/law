@@ -1,0 +1,39 @@
+{
+  "dataset": "WafaaFraih/saudi-legal-moj",
+  "source": "https://huggingface.co/datasets/WafaaFraih/saudi-legal-moj",
+  "source_file": "saudi-legal-moj.parquet",
+  "records": 3185,
+  "columns": [
+    {
+      "name": "text",
+      "type": "string",
+      "non_null": 3185,
+      "sample": "المادة الأولى\n يقصد بالألفاظ والعبارات الآتية - أينما وردت في هذه اللائحة المعاني المبينة أمام كل منها ما لم يقتض السياق خلافذلك:\n النظام: نظام المرافعاتالشرعية.\n اللائحة: اللائحة التنفيذية لإجراءات الاستئناف وفقاً لنظام المرافعاتالشرعية.\n "
+    },
+    {
+      "name": "article_number",
+      "type": "string",
+      "non_null": 3185,
+      "sample": "المادة الأولى"
+    },
+    {
+      "name": "law_name",
+      "type": "string",
+      "non_null": 3185,
+      "sample": "اللائحة التنفيذية لإجراءات الاستئناف"
+    },
+    {
+      "name": "law_type",
+      "type": "string",
+      "non_null": 3185,
+      "sample": "لائحة"
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "non_null": 3185,
+      "sample": "moj.gov.sa"
+    }
+  ],
+  "generated_at_utc": "2026-11-02T04:00:05.775399+00:00"
+}
