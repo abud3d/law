@@ -67,7 +67,7 @@
  <section class="featured-section">
   <h2 class="section-title">صفحات الأنظمة التي أُعدت سابقاً</h2>
   <p class="muted-note">هذه صفحات مستقلة موجودة بالموقع. بعض صفحاتها تحتوي مقتطفات أولية فقط؛ استخدم رابط المصدر الرسمي للنص الكامل.</p>
-  <div class="grid" id="results" aria-live="polite"></div>
+  <div class="meta"><span id="count">جارٍ تجهيز فهرس الأنظمة…</span><span>اختر مجالاً لبدء التصفح</span></div><div class="grid" id="results" aria-live="polite"></div>
  </section>
  <section class="article-search">
   <h2>نتائج البحث داخل المواد والسجلات</h2>
@@ -141,6 +141,6 @@ function renderArticles(){
 function renderFeatured(){const term=normalize(q.value);const found=laws.filter(x=>(!term||normalize([x.name,x.en,x.desc,x.keys].join(" ")).includes(term)));count.textContent="صفحات الأنظمة المستقلة: "+found.length+" من "+laws.length;out.innerHTML=found.map(x=>'<article class="law"><span class="tag">'+x.cat+'</span><h2>'+x.name+'</h2><div class="en">'+x.en+'</div><p>'+x.desc+'</p><small>تاريخ النشر: '+x.date+'</small><div class="status">'+x.status+'</div><a href="'+x.file+'">عرض الصفحة الحالية ←</a><a href="'+x.url+'" target="_blank" rel="noopener">المصدر الرسمي ↗</a></article>').join("")||'<div class="empty">لا توجد صفحات مطابقة.</div>';}
 document.getElementById("hierarchyBack").addEventListener("click",()=>{if(selectedSub)selectedSub="";else selectedCategory="";selectedDatasetLaw="";renderHierarchy();renderArticles();});
 q.addEventListener("input",()=>{selectedDatasetLaw="";selectedCategory="";selectedSub="";renderHierarchy();renderFeatured();renderArticles();});
-renderFeatured();loadArticles();
+renderFeatured();renderHierarchy();renderArticles();loadArticles();
 </script>
 </body></html>
