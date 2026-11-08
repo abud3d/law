@@ -34,6 +34,20 @@ class LegalAuditTests(unittest.TestCase):
         self.assertEqual(len(report["conflicting_article_labels"]),1)
         self.assertEqual(report["conflicting_article_labels"][0]["distinct_texts"],2)
 
+    def test_whitespace_normalization_detects_exact_duplicates(self):
+        rows=[
+            {"law_name":"نظام مثال","article_number":"المادة الأولى","text":"المادة الأولى  نص   واحد","source":"moj.gov.sa"},
+            {"law_name":"نظام مثال","article_number":"المادة الأولى","text":"المادة الأولى نص واحد","source":"moj.gov.sa"},
+        ]
+        report=audit(rows)
+        self.assertEqual(report["issue_counts"]["exact_duplicate_record"],1)
+        self.assertEqual(report["conflicting_article_labels"],[])
+
+    def test_blank_records_are_not_exact_duplicates(self):
+        rows=[{"law_name":"","article_number":"","text":"","source":""} for _ in range(2)]
+        report=audit(rows)
+        self.assertNotIn("exact_duplicate_record",report["issue_counts"])
+
     def test_reject_non_record_data(self):
         with self.assertRaises(ValueError):
             audit([None])
