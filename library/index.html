@@ -138,23 +138,23 @@ async function loadArticles(){
  try{
   const response=await fetch("data/saudi-legal-moj.json");
   if(!response.ok)throw new Error("HTTP "+response.status);
-  const records=await response.json();datasetCount=records.length;auditRecords=records;
+  const records=await response.json();if(!Array.isArray(records))throw new Error("Expected legal records array");datasetCount=records.length;auditRecords=records;
   const grouped=new Map();
   records.forEach(r=>{const name=canonicalName(r.law_name);if(!grouped.has(name)){const c=classifyLaw(name);grouped.set(name,{name,type:documentKind(name,r.law_type),count:0,category:c.category,sub:c.sub,method:c.method});}grouped.get(name).count++;});
   datasetGroups=[...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,"ar"));datasetLaws=datasetGroups.length;
   records.forEach(r=>{const title=r.article_number||"نص نظامي";const text=r.text||"";const c=classifyLaw(r.law_name||"");articleCorpus.push({origin:"dataset",law:canonicalName(r.law_name),title,text,source:r.source||"",officialUrl:r.url||r.source_url||r.document_url||r.official_url||r.link||"",lawType:r.law_type||"",category:c.category,sub:c.sub,search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
  }catch(e){datasetError=true;console.warn("تعذر تحميل مجموعة البيانات:",e);}
- corpusReady=true;renderStats();renderHierarchy();renderArticles();
+ corpusReady=true;renderStats();renderHierarchy();renderArticles();if(datasetError){document.getElementById("articleCount").textContent="تعذر تحميل البيانات القانونية. يرجى تحديث الصفحة لاحقاً.";document.getElementById("exportAudit").disabled=true;}
 }
 function renderStats(){const stats=document.getElementById("datasetStats");const vals=[[datasetLaws,"اسماً لتشريع مستورد"],[datasetCount,"سجلاً مستورداً"],[datasetGroups.filter(d=>d.method==="specific-rule").length,"تشريعاً بقواعد تصنيف محددة"],[datasetGroups.filter(d=>d.method!=="specific-rule").length,"تشريعاً يحتاج مراجعة التصنيف"],[0,"سجلاً تمت مطابقته رسمياً"]];stats.replaceChildren();vals.forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-card";const s=document.createElement("strong");s.textContent=Number(v).toLocaleString("ar-SA");const p=document.createElement("span");p.textContent=l;d.append(s,p);stats.append(d);});}
 function renderHierarchy(){
  const nav=document.getElementById("categoryNav"),sub=document.getElementById("subNav"),list=document.getElementById("lawList"),title=document.getElementById("hierarchyTitle"),path=document.getElementById("pathline"),back=document.getElementById("hierarchyBack");
  nav.replaceChildren();sub.replaceChildren();list.replaceChildren();
  const counts={};datasetGroups.forEach(d=>counts[d.category]=(counts[d.category]||0)+d.count);
- categories.filter(c=>!selectedCategory||c.id===selectedCategory).forEach(c=>{const b=document.createElement("button");b.className="category-card"+(selectedCategory===c.id?" active":"");b.type="button";const strong=document.createElement("strong");strong.textContent=c.name;const span=document.createElement("span");span.textContent=c.desc;const em=document.createElement("em");const categoryCount=datasetGroups.filter(d=>d.category===c.id).length;em.textContent=categoryCount?categoryCount.toLocaleString("ar-SA")+" تشريعاً في البيانات المستوردة":"لا تتوفر تشريعات في البيانات الحالية";b.append(strong,span,em);b.addEventListener("click",()=>{selectedCategory=c.id;selectedSub="";selectedDatasetLaw="";renderHierarchy();renderArticles();});nav.append(b);});
+ categories.filter(c=>!selectedCategory||c.id===selectedCategory).forEach(c=>{const b=document.createElement("button");b.className="category-card"+(selectedCategory===c.id?" active":"");b.type="button";const strong=document.createElement("strong");strong.textContent=c.name;const span=document.createElement("span");span.textContent=c.desc;const em=document.createElement("em");const categoryCount=datasetGroups.filter(d=>d.category===c.id).length;em.textContent=categoryCount?categoryCount.toLocaleString("ar-SA")+" تشريعاً في البيانات المستوردة":"لا تتوفر تشريعات في البيانات الحالية";b.append(strong,span,em);b.addEventListener("click",()=>{selectedCategory=c.id;selectedSub="";selectedDatasetLaw="";resultPage=0;renderHierarchy();renderArticles();});nav.append(b);});
  if(!selectedCategory){title.textContent="اختر المجال الذي تريد تصفحه";path.textContent="المكتبة القانونية ← المجالات";back.hidden=true;return;}
  const c=categories.find(x=>x.id===selectedCategory);title.textContent=c.name;path.textContent="المكتبة القانونية ← "+c.name;back.hidden=false;
- const availableSubs=c.subs.filter(s=>datasetGroups.some(d=>d.category===c.id&&d.sub===s[0]));availableSubs.forEach(s=>{const docs=datasetGroups.filter(d=>d.category===c.id&&d.sub===s[0]);const b=document.createElement("button");b.type="button";b.className=selectedSub===s[0]?"active":"";b.textContent=s[0]+" ("+docs.length.toLocaleString("ar-SA")+")";b.addEventListener("click",()=>{selectedSub=s[0];selectedDatasetLaw="";renderHierarchy();renderArticles();});sub.append(b);});
+ const availableSubs=[...new Set(datasetGroups.filter(d=>d.category===c.id).map(d=>d.sub))].sort((a,b)=>a.localeCompare(b,"ar")).map(name=>[name]);availableSubs.forEach(s=>{const docs=datasetGroups.filter(d=>d.category===c.id&&d.sub===s[0]);const b=document.createElement("button");b.type="button";b.className=selectedSub===s[0]?"active":"";b.textContent=s[0]+" ("+docs.length.toLocaleString("ar-SA")+")";b.addEventListener("click",()=>{selectedSub=s[0];selectedDatasetLaw="";resultPage=0;renderHierarchy();renderArticles();});sub.append(b);});
  if(!availableSubs.length){const empty=document.createElement("p");empty.className="muted-note";empty.textContent="لا تتوفر حالياً تشريعات مصنفة في هذا المجال ضمن مجموعة البيانات المستوردة. سيظهر المحتوى عند إضافة مصادر موثوقة ومراجعته.";list.append(empty);return;}
  if(selectedSub){
   const docs=datasetGroups.filter(d=>d.category===c.id&&d.sub===selectedSub);
@@ -226,7 +226,7 @@ function createAudit(){
   if((body.match(/(?:^|\n)\s*المادة\s+[^\n]{1,45}/g)||[]).length>1)flags.push("multiple_article_headings");
   const classification=classifyLaw(name);
   if(classification.method!=="specific-rule")flags.push("classification_requires_review");
-  if(flags.length)issues.push({record:index+1,law:name,article,classification:classification.category,flags});
+  if(flags.length)issues.push({record:index+1,law:name,article,classification:classification.category,classification_method:classification.method,source_authority:r.source||"",source_url:officialLink({law:name,officialUrl:r.url||r.source_url||r.document_url||r.official_url||r.link||""})||null,verification_status:"not_article_verified",flags});
  });
  const duplicated=[];
  labelCounts.forEach((count,key)=>{if(count>1)duplicated.push({key,count})});
