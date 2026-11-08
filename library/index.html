@@ -114,22 +114,26 @@ const officialLink=hit=>{
 };
 const foldArabic=value=>normalize(value).replace(/(^|[^\u0621-\u064A])ال(?=[\u0621-\u064A])/g,"$1");const matches=(value,pattern)=>new RegExp(foldArabic(pattern.source),pattern.flags).test(foldArabic(value));const categoryFor=name=>{const n=normalize(name);if(matches(n,/آلية العمل التنفيذية لنظام القضاء ونظام ديوان المظالم/))return {category:"administrative",sub:"القضاء الإداري وديوان المظالم"};if(matches(n,/لائحة التقارير الطبية/))return {category:"health",sub:"الصحة والمسؤولية الطبية"};if(matches(n,/غسل الأموال/))return {category:"criminal",sub:"الجرائم المالية والإرهاب"};for(const c of categories.filter(x=>x.id!=="other")){for(const s of c.subs){if(matches(n,s[1]))return {category:c.id,sub:s[0]}}}return {category:"other",sub:"غير مصنف"}};
 // Priority rules: specific legal subject beats generic words such as "عمل" or "إجراءات".
+// Reviewed against all 69 canonical names in the imported dataset.
+// A matching subject is more reliable than generic words such as "عمل" or "إجراءات".
 const categoryOverrides=[
-[/إجراءات الاستئناف|المرافعات الشرعية|المرافعات أمام ديوان المظالم|نظام الإثبات|اللائحة التنفيذية لنظام الإثبات|التوثيق|المحاماة|التحكيم|التنفيذ|التكاليف القضائية|الخبرة أمام المحاكم|المصالحة|الوساطة|الاعتراض على الأحكام/,"procedure"],
-[/نظام الإجراءات الجزائية|اللائحة التنفيذية لنظام الإجراءات الجزائية|غسل الأموال|الجرائم المعلوماتية|جرائم الإرهاب|الاحتيال المالي|مكافحة الرشوة/,"criminal"],
-[/نظام الأحوال الشخصية|اللائحة التنفيذية لنظام الأحوال الشخصية|الولاية على أموال القاصرين|التركات|المواريث/,"family"],
-[/نظام التسجيل العيني للعقار|الوساطة العقارية|ملكية الوحدات العقارية/,"realestate"],
-[/نظام المعاملات المدنية|نظام الإيجار التمويلي/,"civil"],
-[/نظام الشركات|نظام الإفلاس|المحاكم التجارية|السجل التجاري/,"commercial"],
-[/نظام ديوان المظالم|نظام القضاء الإداري|آلية العمل التنفيذية لنظام القضاء/,"administrative"]
+[/آلية العمل التنفيذية لنظام القضاء ونظام ديوان المظالم|نظام القضاء$|التفتيش القضائي|تعارض المصالح.*السلك القضائي|أعوان القضاء/,"administrative","القضاء الإداري وديوان المظالم"],
+[/التقارير الطبية/,"health","الصحة والمسؤولية الطبية"],
+[/التمويل العقاري|الرهن العقاري|تملك.*العقار|تملك.*للعقار|تملك غير السعوديين|التسجيل العيني|الوحدات العقارية|العقارات البلدية|التصرف في العقارات|نزع ملكية العقارات/,"realestate","الملكية والتسجيل"],
+[/زواج السعودي|الأحوال الشخصية/,"family","الزواج والفرقة"],
+[/صندوق النفقة/,"family","النفقة والحضانة"],
+[/قسمة الأموال المشتركة/,"civil","الحقوق والأموال"],
+[/نظام المعاملات المدنية/,"civil","الالتزامات والعقود"],
+[/الإفلاس|المحاكم التجارية/,"commercial","التجارة والأعمال"],
+[/غسل الأموال|الإرهاب|الإجراءات الجزائية|نظام الأحداث|نظام حماية المبلغين والشهود|الجرائم الكبيرة/,"criminal","الإجراءات الجزائية"],
+[/الإثبات|التوثيق|الخبرة أمام المحاكم|أتعاب الخبراء|الوثائق القضائية/,"procedure","الإثبات والتوثيق"],
+[/التنفيذ|التحكيم/,"procedure","التنفيذ والتحكيم"],
+[/المرافعات|الاستئناف|الاعتراض على الأحكام|التكاليف القضائية|التقاضي الإلكتروني|الترخيص لمكاتب المحاماة|المحاماة|المحامين|السلوك المهني|الدعوى التأديبية|مكاتب المصالحة|مركز المصالحة|مركز الاسناد والتصفية|مقدمي خدمات التنفيذ|التدريب العدلي/,"procedure","المرافعات والتقاضي"]
 ];
 const classifyLaw=name=>{
  const n=canonicalName(name);
- for(const [pattern,id] of categoryOverrides)if(matches(n,pattern)){
-  const c=categories.find(x=>x.id===id);
-  const matching=c.subs.find(sub=>matches(n,sub[1]));
-  return {category:id,sub:matching?matching[0]:c.subs[0][0],method:"specific-rule"};
- }
+ for(const [pattern,id,sub] of categoryOverrides)if(matches(n,pattern))
+  return {category:id,sub,method:"specific-rule"};
  return {...categoryFor(n),method:"keyword-rule"};
 };
 const categoryName=id=>categories.find(c=>c.id===id)?.name||"قطاعات ومجالات أخرى";
