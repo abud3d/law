@@ -148,6 +148,17 @@ async function loadArticles(){
   datasetGroups=[...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,"ar"));datasetLaws=datasetGroups.length;
   records.forEach(r=>{const title=r.article_number||"نص نظامي";const text=r.text||"";const c=classifyLaw(r.law_name||"");articleCorpus.push({origin:"dataset",law:canonicalName(r.law_name),title,text,source:r.source||"",officialUrl:r.url||r.source_url||r.document_url||r.official_url||r.link||"",lawType:r.law_type||"",category:c.category,sub:c.sub,search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
  }catch(e){datasetError=true;console.warn("تعذر تحميل مجموعة البيانات:",e);}
+ try{
+  const response=await fetch("data/official-legislation-catalog.json");
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const official=await response.json();
+  for(const item of official){
+   if(datasetGroups.some(d=>d.name===item.name))continue;
+   datasetGroups.push({name:item.name,type:"نظام",count:0,category:item.category,sub:item.sub,method:"official-source",officialUrl:item.url,description:item.description});
+   articleCorpus.push({origin:"official",law:item.name,title:"المرجع الحكومي الرسمي",text:item.description,source:item.source,officialUrl:item.url,category:item.category,sub:item.sub,search:normalize([item.name,item.description,item.category].join(" "))});
+  }
+  datasetGroups.sort((a,b)=>a.name.localeCompare(b.name,"ar"));
+ }catch(e){console.warn("تعذر تحميل فهرس التشريعات الرسمية:",e);}
  corpusReady=true;renderStats();renderHierarchy();renderArticles();if(datasetError){document.getElementById("articleCount").textContent="تعذر تحميل البيانات القانونية. يرجى تحديث الصفحة لاحقاً.";document.getElementById("exportAudit").disabled=true;}
 }
 function renderStats(){const stats=document.getElementById("datasetStats");const vals=[[datasetLaws,"اسماً لتشريع مستورد"],[datasetCount,"سجلاً مستورداً"],[datasetGroups.filter(d=>d.method==="specific-rule").length,"تشريعاً بقواعد تصنيف محددة"],[datasetGroups.filter(d=>d.method!=="specific-rule").length,"تشريعاً يحتاج مراجعة التصنيف"],[0,"سجلاً تمت مطابقته رسمياً"]];stats.replaceChildren();vals.forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-card";const s=document.createElement("strong");s.textContent=Number(v).toLocaleString("ar-SA");const p=document.createElement("span");p.textContent=l;d.append(s,p);stats.append(d);});}
@@ -170,10 +181,10 @@ function renderHierarchy(){
    const info=document.createElement("div");const strong=document.createElement("strong");
    strong.textContent=(parent?"↳ ":"")+d.name;
    const small=document.createElement("small");
-   const source=officialRegistry[d.name]?"رابط حكومي مسجل (غير مدقق)":"المرجع المباشر غير مسجل";
-   small.textContent=d.type+" · "+d.count.toLocaleString("ar-SA")+" سجل · "+source+" · "+(d.method==="specific-rule"?"تصنيف موضوعي محدد":"تصنيف آلي يحتاج مراجعة");
+   const source=d.method==="official-source"?"مرجع حكومي مباشر موثق؛ النص الكامل في المصدر":officialRegistry[d.name]?"رابط حكومي مسجل (غير مدقق)":"المرجع المباشر غير مسجل";
+   small.textContent=d.method==="official-source"?"نظام · "+source:d.type+" · "+d.count.toLocaleString("ar-SA")+" سجل · "+source+" · "+(d.method==="specific-rule"?"تصنيف موضوعي محدد":"تصنيف آلي يحتاج مراجعة");
    info.append(strong,small);
-   const btn=document.createElement("button");btn.type="button";btn.textContent="عرض المواد";
+   const btn=document.createElement("button");btn.type="button";btn.textContent=d.method==="official-source"?"عرض المرجع الرسمي":"عرض المواد";
    btn.addEventListener("click",()=>{selectedDatasetLaw=d.name;resultPage=0;renderArticles();document.getElementById("articleResults").scrollIntoView({behavior:"smooth",block:"start"});});
    row.append(info,btn);list.append(row);
   };
@@ -190,13 +201,13 @@ function renderHierarchy(){
 function renderArticles(){
  const target=document.getElementById("articleResults"),counter=document.getElementById("articleCount");if(!corpusReady){counter.textContent="جارٍ تحميل المواد والسجلات القانونية…";return;}
  const term=normalize(q.value);let hits=[];
- if(selectedDatasetLaw)hits=articleCorpus.filter(x=>x.origin==="dataset"&&x.law===selectedDatasetLaw);
+ if(selectedDatasetLaw)hits=articleCorpus.filter(x=>x.law===selectedDatasetLaw&&x.origin!=="site");
  else if(term)hits=articleCorpus.filter(x=>x.search.includes(term));
- else if(selectedCategory&&selectedSub)hits=articleCorpus.filter(x=>x.origin==="dataset"&&x.category===selectedCategory&&x.sub===selectedSub);
+ else if(selectedCategory&&selectedSub)hits=articleCorpus.filter(x=>(x.origin==="dataset"||x.origin==="official")&&x.category===selectedCategory&&x.sub===selectedSub);
  resultPage=Math.max(0,Math.min(resultPage,Math.max(0,Math.ceil(hits.length/PAGE_SIZE)-1)));
  const imported=hits.filter(x=>x.origin==="dataset").length;
- counter.textContent=selectedDatasetLaw?"التشريع المحدد: "+selectedDatasetLaw+" · "+imported.toLocaleString("ar-SA")+" سجل — غير مطابق رسمياً":term?"نتائج البحث: "+hits.length.toLocaleString("ar-SA")+" (المجموعة المستوردة: "+imported.toLocaleString("ar-SA")+")":selectedSub?"سجلات التخصص: "+hits.length.toLocaleString("ar-SA"):"اكتب عبارة للبحث أو اختر تشريعاً من المجالات أعلاه.";
- target.replaceChildren();hits.slice(resultPage*PAGE_SIZE,(resultPage+1)*PAGE_SIZE).forEach(hit=>{const card=document.createElement("article");card.className="article-hit";const h=document.createElement("h3");h.textContent=hit.title+" — "+hit.law;const p=document.createElement("p");p.textContent=(hit.text||"").slice(0,1000)+(hit.text&&hit.text.length>1000?"…":"");card.append(h,p);if(hit.text&&hit.text.length>1000){const full=document.createElement("button");full.type="button";full.className="read-full";full.textContent="عرض النص كاملًا";full.addEventListener("click",()=>{const expanded=full.getAttribute("aria-expanded")==="true";p.textContent=expanded?hit.text.slice(0,1000)+"…":hit.text;full.textContent=expanded?"عرض مختصر":"إخفاء النص الكامل";full.setAttribute("aria-expanded",String(!expanded));});card.append(full);}if(hit.origin==="site"){const a=document.createElement("a");a.href=hit.file+"#"+hit.anchor;a.textContent="فتح صفحة النظام ←";card.append(a);}else{
+ counter.textContent=selectedDatasetLaw?"التشريع المحدد: "+selectedDatasetLaw+" · "+(hits.some(x=>x.origin==="official")?"مرجع حكومي رسمي":imported.toLocaleString("ar-SA")+" سجل مستورد غير مطابق رسمياً"):term?"نتائج البحث: "+hits.length.toLocaleString("ar-SA")+" (المجموعة المستوردة: "+imported.toLocaleString("ar-SA")+")":selectedSub?"سجلات التخصص: "+hits.length.toLocaleString("ar-SA"):"اكتب عبارة للبحث أو اختر تشريعاً من المجالات أعلاه.";
+ target.replaceChildren();hits.slice(resultPage*PAGE_SIZE,(resultPage+1)*PAGE_SIZE).forEach(hit=>{const card=document.createElement("article");card.className="article-hit";const h=document.createElement("h3");h.textContent=hit.title+" — "+hit.law;const p=document.createElement("p");p.textContent=(hit.text||"").slice(0,1000)+(hit.text&&hit.text.length>1000?"…":"");card.append(h,p);if(hit.text&&hit.text.length>1000){const full=document.createElement("button");full.type="button";full.className="read-full";full.textContent="عرض النص كاملًا";full.addEventListener("click",()=>{const expanded=full.getAttribute("aria-expanded")==="true";p.textContent=expanded?hit.text.slice(0,1000)+"…":hit.text;full.textContent=expanded?"عرض مختصر":"إخفاء النص الكامل";full.setAttribute("aria-expanded",String(!expanded));});card.append(full);}if(hit.origin==="official"){const a=document.createElement("a");a.href=hit.officialUrl;a.target="_blank";a.rel="noopener noreferrer";a.textContent="قراءة النص الكامل من هيئة الخبراء ↗";card.append(a);const note=document.createElement("small");note.textContent="مرجع رسمي موثق، لم يُستورد نص المواد إلى المكتبة بعد.";card.append(note);}else if(hit.origin==="site"){const a=document.createElement("a");a.href=hit.file+"#"+hit.anchor;a.textContent="فتح صفحة النظام ←";card.append(a);}else{
   const link=officialLink(hit);
   const source=document.createElement("div");source.className="source-reference";
   const label=document.createElement("strong");label.textContent="مرجع السجل: ";
