@@ -33,12 +33,23 @@ def audit(rows):
 def build_report(rows):
     groups = collections.defaultdict(list)
     issues = []
+    seen_exact = {}
+    seen_labels = collections.defaultdict(list)
     for idx, row in enumerate(rows):
         name = clean(row.get("law_name"))
         groups[name].append(idx)
         article = clean(row.get("article_number"))
-        raw = row.get("text") or ""
+        raw = str(row.get("text") or "")
         flags = []
+        normalized_text = re.sub(r"\\s+", " ", raw).strip()
+        exact_key = (article_key(name), article_key(article), normalized_text)
+        label_key = (article_key(name), article_key(article))
+        if exact_key in seen_exact:
+            flags.append("exact_duplicate_record")
+        else:
+            seen_exact[exact_key] = idx + 1
+        if name and article:
+            seen_labels[label_key].append((idx + 1, normalized_text))
         if not name: flags.append("missing_law_name")
         if not article: flags.append("missing_article_number")
         if not raw.strip(): flags.append("missing_text")
@@ -51,6 +62,13 @@ def build_report(rows):
         headings = re.findall(r"(?:^|\n)\s*المادة\s+[^\n:]{1,45}", raw)
         if len(headings) > 1: flags.append("multiple_article_headings")
         if flags: issues.append({"row":idx+1,"law":name,"article":article,"flags":flags})
+    conflicting_labels = []
+    for (name, article), matches in seen_labels.items():
+        distinct_texts = {text for _, text in matches if text}
+        if len(distinct_texts) > 1:
+            conflicting_labels.append({"law": name, "article": article,
+                                       "rows": [index for index, _ in matches],
+                                       "distinct_texts": len(distinct_texts)})
     names = []
     for name, indices in sorted(groups.items()):
         seen = collections.Counter(article_key(rows[i].get("article_number")) for i in indices)
@@ -63,7 +81,8 @@ def build_report(rows):
       "note":"Structural audit only. This does not verify the authenticity, completeness, or currency of any legal text.",
       "source_policy":"moj.gov.sa is an authority-level label, not a verified article URL.",
       "issue_counts":dict(collections.Counter(flag for issue in issues for flag in issue["flags"])),
-      "legislation":names,"records_requiring_review":issues
+      "legislation":names,"records_requiring_review":issues,
+      "conflicting_article_labels":conflicting_labels
     }
     return result
 
