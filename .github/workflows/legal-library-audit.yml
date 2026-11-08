@@ -32,6 +32,8 @@ jobs:
           print("Structural audit passed:",len(data),"records,",len(report["legislation"]),"canonical names")
           print("Review flags:",report["issue_counts"])
           PY
+      - name: Validate legal category coverage for all imported titles
+        run: node scripts/test_legal_categories.cjs
       - name: Validate inline JavaScript syntax
         run: |
           python3 - <<'PY'
