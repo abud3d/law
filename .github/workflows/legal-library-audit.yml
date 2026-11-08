@@ -1,5 +1,8 @@
 name: Legal library audit
 on:
+  push:
+    branches:
+      - 'improve/library-index-sources'
   pull_request:
     paths:
       - 'library/**'
