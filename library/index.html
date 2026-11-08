@@ -140,7 +140,7 @@ const categoryName=id=>categories.find(c=>c.id===id)?.name||"قطاعات ومج
 let resultPage=0;const PAGE_SIZE=40;let auditRecords=[];let cat="all",articleCorpus=[],corpusReady=false,datasetCount=0,datasetLaws=0,datasetError=false,datasetGroups=[],selectedDatasetLaw="",selectedCategory="",selectedSub="";
 async function loadArticles(){
  try{
-  const response=await fetch("data/saudi-legal-moj.json");
+  const response=await fetch("data/saudi-legal-moj.json",{cache:"no-store"});
   if(!response.ok)throw new Error("HTTP "+response.status);
   const records=await response.json();if(!Array.isArray(records))throw new Error("Expected legal records array");datasetCount=records.length;auditRecords=records;
   const grouped=new Map();
@@ -149,7 +149,7 @@ async function loadArticles(){
   records.forEach(r=>{const title=r.article_number||"نص نظامي";const text=r.text||"";const c=classifyLaw(r.law_name||"");articleCorpus.push({origin:"dataset",law:canonicalName(r.law_name),title,text,source:r.source||"",officialUrl:r.url||r.source_url||r.document_url||r.official_url||r.link||"",lawType:r.law_type||"",category:c.category,sub:c.sub,search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
  }catch(e){datasetError=true;console.warn("تعذر تحميل مجموعة البيانات:",e);}
  try{
-  const response=await fetch("data/official-legislation-catalog.json");
+  const response=await fetch("data/official-legislation-catalog.json?v=20261109-1",{cache:"no-store"});
   if(!response.ok)throw new Error("HTTP "+response.status);
   const official=await response.json();
   for(const item of official){
