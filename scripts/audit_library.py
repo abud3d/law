@@ -23,10 +23,14 @@ def classify(name):
     if "تنظيم" in name: return "تنظيم"
     if "نظام" in name: return "نظام"
     return "غير محدد"
-def main():
-    rows = json.loads(SOURCE.read_text(encoding="utf-8"))
+def audit(rows):
     if not isinstance(rows, list):
-        raise SystemExit("Expected a JSON array")
+        raise ValueError("Expected a JSON array")
+    if not all(isinstance(row, dict) for row in rows):
+        raise ValueError("All records must be JSON objects")
+    return build_report(rows)
+
+def build_report(rows):
     groups = collections.defaultdict(list)
     issues = []
     for idx, row in enumerate(rows):
@@ -41,6 +45,8 @@ def main():
         if not row.get("source"): flags.append("missing_source")
         if not any(row.get(k) for k in ("url", "source_url", "document_url", "official_url", "link")):
             flags.append("missing_direct_url")
+        if name and article and not re.search(re.escape(article_key(article).replace("ا", "[اأإآ]")), article_key(raw)):
+            flags.append("article_label_not_found_in_text")
         if re.search(r"\(جزء\s*\d+\)", article): flags.append("article_fragment")
         headings = re.findall(r"(?:^|\n)\s*المادة\s+[^\n:]{1,45}", raw)
         if len(headings) > 1: flags.append("multiple_article_headings")
@@ -59,7 +65,12 @@ def main():
       "issue_counts":dict(collections.Counter(flag for issue in issues for flag in issue["flags"])),
       "legislation":names,"records_requiring_review":issues
     }
+    return result
+
+def main():
+    rows = json.loads(SOURCE.read_text(encoding="utf-8"))
+    result = audit(rows)
     OUTPUT.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    print(f"Audited {len(rows)} records across {len(names)} canonical names; report: {OUTPUT}")
+    print(f"Audited {len(rows)} records across {len(result['legislation'])} canonical names; report: {OUTPUT}")
 if __name__ == "__main__":
     main()
