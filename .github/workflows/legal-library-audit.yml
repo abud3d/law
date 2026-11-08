@@ -2,7 +2,7 @@ name: Legal library audit
 on:
   push:
     branches:
-      - 'improve/library-index-sources'
+      - main
   pull_request:
     paths:
       - 'library/**'
