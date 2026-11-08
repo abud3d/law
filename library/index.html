@@ -105,6 +105,25 @@ const documentKind=(name,type)=>/لائحة|اللائحة/.test(name)?"لائح
 const parentName=name=>{const n=canonicalName(name);return n.replace(/^(?:اللائحة التنفيذية|لائحة تنفيذية|اللائحة|لائحة|القواعد التنفيذية|قواعد تنفيذية)\s+(?:لـ|ل)?/,"").replace(/^ل(?=نظام)/,"").trim()};
 const officialLink=hit=>{const url=hit.officialUrl||officialRegistry[canonicalName(hit.law)]||"";try{const u=new URL(url);return /^https?:$/.test(u.protocol)&&u.hostname!=="moj.gov.sa"&&(u.pathname!=="/"||u.search)?url:""}catch{return ""}};
 const foldArabic=value=>normalize(value).replace(/(^|[^\\u0621-\\u064A])ال(?=[\\u0621-\\u064A])/g,"$1");const matches=(value,pattern)=>new RegExp(foldArabic(pattern.source),pattern.flags).test(foldArabic(value));const categoryFor=name=>{const n=normalize(name);if(matches(n,/آلية العمل التنفيذية لنظام القضاء ونظام ديوان المظالم/))return {category:"administrative",sub:"القضاء الإداري وديوان المظالم"};if(matches(n,/لائحة التقارير الطبية/))return {category:"health",sub:"الصحة والمسؤولية الطبية"};if(matches(n,/غسل الأموال/))return {category:"criminal",sub:"الجرائم المالية والإرهاب"};for(const c of categories.filter(x=>x.id!=="other")){for(const s of c.subs){if(matches(n,s[1]))return {category:c.id,sub:s[0]}}}return {category:"other",sub:"غير مصنف"}};
+// Priority rules: specific legal subject beats generic words such as "عمل" or "إجراءات".
+const categoryOverrides=[
+[/إجراءات الاستئناف|المرافعات الشرعية|المرافعات أمام ديوان المظالم|نظام الإثبات|اللائحة التنفيذية لنظام الإثبات|التوثيق|المحاماة|التحكيم|التنفيذ|التكاليف القضائية|الخبرة أمام المحاكم|المصالحة|الوساطة|الاعتراض على الأحكام/,"procedure"],
+[/نظام الإجراءات الجزائية|اللائحة التنفيذية لنظام الإجراءات الجزائية|غسل الأموال|الجرائم المعلوماتية|جرائم الإرهاب|الاحتيال المالي|مكافحة الرشوة/,"criminal"],
+[/نظام الأحوال الشخصية|اللائحة التنفيذية لنظام الأحوال الشخصية|الولاية على أموال القاصرين|التركات|المواريث/,"family"],
+[/نظام التسجيل العيني للعقار|الوساطة العقارية|ملكية الوحدات العقارية/,"realestate"],
+[/نظام المعاملات المدنية|نظام الإيجار التمويلي/,"civil"],
+[/نظام الشركات|نظام الإفلاس|المحاكم التجارية|السجل التجاري/,"commercial"],
+[/نظام ديوان المظالم|نظام القضاء الإداري|آلية العمل التنفيذية لنظام القضاء/,"administrative"]
+];
+const classifyLaw=name=>{
+ const n=canonicalName(name);
+ for(const [pattern,id] of categoryOverrides)if(matches(n,pattern)){
+  const c=categories.find(x=>x.id===id);
+  const matching=c.subs.find(sub=>matches(n,sub[1]));
+  return {category:id,sub:matching?matching[0]:c.subs[0][0],method:"specific-rule"};
+ }
+ return {...categoryFor(n),method:"keyword-rule"};
+};
 const categoryName=id=>categories.find(c=>c.id===id)?.name||"قطاعات ومجالات أخرى";
 let cat="all",articleCorpus=[],corpusReady=false,datasetCount=0,datasetLaws=0,datasetError=false,datasetGroups=[],selectedDatasetLaw="",selectedCategory="",selectedSub="";
 async function loadArticles(){
@@ -113,13 +132,13 @@ async function loadArticles(){
   if(!response.ok)throw new Error("HTTP "+response.status);
   const records=await response.json();datasetCount=records.length;
   const grouped=new Map();
-  records.forEach(r=>{const name=canonicalName(r.law_name);if(!grouped.has(name)){const c=categoryFor(name);grouped.set(name,{name,type:documentKind(name,r.law_type),count:0,category:c.category,sub:c.sub});}grouped.get(name).count++;});
+  records.forEach(r=>{const name=canonicalName(r.law_name);if(!grouped.has(name)){const c=classifyLaw(name);grouped.set(name,{name,type:documentKind(name,r.law_type),count:0,category:c.category,sub:c.sub,method:c.method});}grouped.get(name).count++;});
   datasetGroups=[...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,"ar"));datasetLaws=datasetGroups.length;
-  records.forEach(r=>{const title=[r.article_number,r.law_name].filter(Boolean).join(" — ")||"نص نظامي";const text=r.text||"";const c=categoryFor(r.law_name||"");articleCorpus.push({origin:"dataset",law:canonicalName(r.law_name),title,text,source:r.source||"",officialUrl:r.url||r.source_url||r.document_url||r.official_url||r.link||"",lawType:r.law_type||"",category:c.category,sub:c.sub,search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
+  records.forEach(r=>{const title=[r.article_number,r.law_name].filter(Boolean).join(" — ")||"نص نظامي";const text=r.text||"";const c=classifyLaw(r.law_name||"");articleCorpus.push({origin:"dataset",law:canonicalName(r.law_name),title,text,source:r.source||"",officialUrl:r.url||r.source_url||r.document_url||r.official_url||r.link||"",lawType:r.law_type||"",category:c.category,sub:c.sub,search:normalize([r.law_name,r.article_number,r.text,r.law_type,r.source].join(" "))});});
  }catch(e){datasetError=true;console.warn("تعذر تحميل مجموعة البيانات:",e);}
  corpusReady=true;renderStats();renderHierarchy();renderArticles();
 }
-function renderStats(){const stats=document.getElementById("datasetStats");const vals=[[datasetLaws,"اسماً لتشريع مستورد"],[datasetCount,"سجلاً مستورداً"],[0,"سجلاً تمت مطابقته رسمياً"]];stats.replaceChildren();vals.forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-card";const s=document.createElement("strong");s.textContent=Number(v).toLocaleString("ar-SA");const p=document.createElement("span");p.textContent=l;d.append(s,p);stats.append(d);});}
+function renderStats(){const stats=document.getElementById("datasetStats");const vals=[[datasetLaws,"اسماً لتشريع مستورد"],[datasetCount,"سجلاً مستورداً"],[datasetGroups.filter(d=>d.method==="specific-rule").length,"تشريعاً بقواعد تصنيف محددة"],[datasetGroups.filter(d=>d.method!=="specific-rule").length,"تشريعاً يحتاج مراجعة التصنيف"],[0,"سجلاً تمت مطابقته رسمياً"]];stats.replaceChildren();vals.forEach(([v,l])=>{const d=document.createElement("div");d.className="stat-card";const s=document.createElement("strong");s.textContent=Number(v).toLocaleString("ar-SA");const p=document.createElement("span");p.textContent=l;d.append(s,p);stats.append(d);});}
 function renderHierarchy(){
  const nav=document.getElementById("categoryNav"),sub=document.getElementById("subNav"),list=document.getElementById("lawList"),title=document.getElementById("hierarchyTitle"),path=document.getElementById("pathline"),back=document.getElementById("hierarchyBack");
  nav.replaceChildren();sub.replaceChildren();list.replaceChildren();
@@ -140,7 +159,7 @@ function renderHierarchy(){
    strong.textContent=(parent?"↳ ":"")+d.name;
    const small=document.createElement("small");
    const source=officialRegistry[d.name]?"مرجع تشريع مباشر متاح":"المرجع المباشر غير مسجل";
-   small.textContent=d.type+" · "+d.count.toLocaleString("ar-SA")+" سجل · "+source;
+   small.textContent=d.type+" · "+d.count.toLocaleString("ar-SA")+" سجل · "+source+" · "+(d.method==="specific-rule"?"تصنيف موضوعي محدد":"تصنيف آلي يحتاج مراجعة");
    info.append(strong,small);
    const btn=document.createElement("button");btn.type="button";btn.textContent="عرض المواد";
    btn.addEventListener("click",()=>{selectedDatasetLaw=d.name;renderArticles();document.getElementById("articleResults").scrollIntoView({behavior:"smooth",block:"start"});});
