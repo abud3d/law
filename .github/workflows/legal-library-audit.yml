@@ -44,6 +44,33 @@ jobs:
           Path("/tmp/legal-library-inline.js").write_text("\n".join(scripts),encoding="utf-8")
           PY
           node --check /tmp/legal-library-inline.js
+      - name: Publish audit summary in Actions
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path("library/data/legal-audit.json")
+          lines = ["## Saudi legal library audit", ""]
+          if path.exists():
+              report = json.loads(path.read_text(encoding="utf-8"))
+              lines.extend([
+                  f"- Imported records: **{report['total_records']:,}**",
+                  f"- Canonical legislation names: **{report['legislation_names']}**",
+                  "- Scope: structural checks only; **not** official legal-text verification.",
+                  "",
+                  "| Review flag | Records |",
+                  "|---|---:|",
+              ])
+              for key, count in sorted(report["issue_counts"].items(), key=lambda pair: -pair[1]):
+                  lines.append(f"| {key} | {count:,} |")
+              lines.extend(["", "Download the full JSON report from the workflow artifacts."])
+          else:
+              lines.append("Audit report not generated; inspect failed steps above.")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as output:
+              output.write("\n".join(lines) + "\n")
+          PY
       - name: Upload audit report
         uses: actions/upload-artifact@v4
         with:
