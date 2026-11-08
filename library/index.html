@@ -75,7 +75,7 @@
 <script>
 const q=document.getElementById("q");
 const initialSearch=new URLSearchParams(window.location.search).get("q")||"";if(initialSearch){q.value=initialSearch;}
-const normalize=s=>(s||"").toLocaleLowerCase("ar").normalize("NFD").replace(/[\\u064B-\\u065F\\u0670\\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").trim();
+const normalize=s=>(s||"").toLocaleLowerCase("ar").normalize("NFD").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").trim();
 const categories=[
 {id:"civil",name:"القانون المدني",desc:"الالتزامات والعقود والحقوق والتعويض",subs:[["الالتزامات والعقود",/معاملات مدنية|التزامات|عقود|بيع|إيجار|مقاولة|مؤجر|مستأجر|أصول منقولة/],["المسؤولية والتعويض",/مسؤولية|تعويض|ضرر|ضمان/],["الحقوق والأموال",/ملكية|حقوق عينية|أموال|رهن/]]},
 {id:"commercial",name:"القانون التجاري",desc:"الشركات والأعمال والتجارة والإفلاس",subs:[["الشركات",/شركات|شركة/],["التجارة والأعمال",/تجاري|تجارة|أوراق تجارية|وكالات تجارية/],["الإفلاس والاستثمار",/إفلاس|استثمار/]]},
@@ -112,7 +112,7 @@ const officialLink=hit=>{
   return u.protocol==="https:"&&officialHost&&u.pathname!=="/"?u.href:"";
  }catch{return ""}
 };
-const foldArabic=value=>normalize(value).replace(/(^|[^\\u0621-\\u064A])ال(?=[\\u0621-\\u064A])/g,"$1");const matches=(value,pattern)=>new RegExp(foldArabic(pattern.source),pattern.flags).test(foldArabic(value));const categoryFor=name=>{const n=normalize(name);if(matches(n,/آلية العمل التنفيذية لنظام القضاء ونظام ديوان المظالم/))return {category:"administrative",sub:"القضاء الإداري وديوان المظالم"};if(matches(n,/لائحة التقارير الطبية/))return {category:"health",sub:"الصحة والمسؤولية الطبية"};if(matches(n,/غسل الأموال/))return {category:"criminal",sub:"الجرائم المالية والإرهاب"};for(const c of categories.filter(x=>x.id!=="other")){for(const s of c.subs){if(matches(n,s[1]))return {category:c.id,sub:s[0]}}}return {category:"other",sub:"غير مصنف"}};
+const foldArabic=value=>normalize(value).replace(/(^|[^\u0621-\u064A])ال(?=[\u0621-\u064A])/g,"$1");const matches=(value,pattern)=>new RegExp(foldArabic(pattern.source),pattern.flags).test(foldArabic(value));const categoryFor=name=>{const n=normalize(name);if(matches(n,/آلية العمل التنفيذية لنظام القضاء ونظام ديوان المظالم/))return {category:"administrative",sub:"القضاء الإداري وديوان المظالم"};if(matches(n,/لائحة التقارير الطبية/))return {category:"health",sub:"الصحة والمسؤولية الطبية"};if(matches(n,/غسل الأموال/))return {category:"criminal",sub:"الجرائم المالية والإرهاب"};for(const c of categories.filter(x=>x.id!=="other")){for(const s of c.subs){if(matches(n,s[1]))return {category:c.id,sub:s[0]}}}return {category:"other",sub:"غير مصنف"}};
 // Priority rules: specific legal subject beats generic words such as "عمل" or "إجراءات".
 const categoryOverrides=[
 [/إجراءات الاستئناف|المرافعات الشرعية|المرافعات أمام ديوان المظالم|نظام الإثبات|اللائحة التنفيذية لنظام الإثبات|التوثيق|المحاماة|التحكيم|التنفيذ|التكاليف القضائية|الخبرة أمام المحاكم|المصالحة|الوساطة|الاعتراض على الأحكام/,"procedure"],
