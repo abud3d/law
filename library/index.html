@@ -103,7 +103,15 @@ const officialRegistry={
 const canonicalName=name=>(name||"غير محدد").trim().replace(/[.،؛\s]+$/g,"").replace(/\s+/g," ");
 const documentKind=(name,type)=>/لائحة|اللائحة/.test(name)?"لائحة":/قواعد/.test(name)?"قواعد":/ضوابط/.test(name)?"ضوابط":/تنظيم/.test(name)?"تنظيم":/نظام/.test(name)?"نظام":type||"تشريع";
 const parentName=name=>{const n=canonicalName(name);return n.replace(/^(?:اللائحة التنفيذية|لائحة تنفيذية|اللائحة|لائحة|القواعد التنفيذية|قواعد تنفيذية)\s+(?:لـ|ل)?/,"").replace(/^ل(?=نظام)/,"").trim()};
-const officialLink=hit=>{const url=hit.officialUrl||officialRegistry[canonicalName(hit.law)]||"";try{const u=new URL(url);return /^https?:$/.test(u.protocol)&&u.hostname!=="moj.gov.sa"&&(u.pathname!=="/"||u.search)?url:""}catch{return ""}};
+const officialLink=hit=>{
+ const url=hit.officialUrl||officialRegistry[canonicalName(hit.law)]||"";
+ try{
+  const u=new URL(url);
+  // Only direct government legislation pages are accepted as official links.
+  const officialHost=u.hostname==="laws.boe.gov.sa"||u.hostname==="boe.gov.sa"||u.hostname==="uqn.gov.sa"||u.hostname.endsWith(".gov.sa");
+  return u.protocol==="https:"&&officialHost&&u.pathname!=="/"?u.href:"";
+ }catch{return ""}
+};
 const foldArabic=value=>normalize(value).replace(/(^|[^\\u0621-\\u064A])ال(?=[\\u0621-\\u064A])/g,"$1");const matches=(value,pattern)=>new RegExp(foldArabic(pattern.source),pattern.flags).test(foldArabic(value));const categoryFor=name=>{const n=normalize(name);if(matches(n,/آلية العمل التنفيذية لنظام القضاء ونظام ديوان المظالم/))return {category:"administrative",sub:"القضاء الإداري وديوان المظالم"};if(matches(n,/لائحة التقارير الطبية/))return {category:"health",sub:"الصحة والمسؤولية الطبية"};if(matches(n,/غسل الأموال/))return {category:"criminal",sub:"الجرائم المالية والإرهاب"};for(const c of categories.filter(x=>x.id!=="other")){for(const s of c.subs){if(matches(n,s[1]))return {category:c.id,sub:s[0]}}}return {category:"other",sub:"غير مصنف"}};
 // Priority rules: specific legal subject beats generic words such as "عمل" or "إجراءات".
 const categoryOverrides=[
@@ -158,7 +166,7 @@ function renderHierarchy(){
    const info=document.createElement("div");const strong=document.createElement("strong");
    strong.textContent=(parent?"↳ ":"")+d.name;
    const small=document.createElement("small");
-   const source=officialRegistry[d.name]?"مرجع تشريع مباشر متاح":"المرجع المباشر غير مسجل";
+   const source=officialRegistry[d.name]?"رابط حكومي مسجل (غير مدقق)":"المرجع المباشر غير مسجل";
    small.textContent=d.type+" · "+d.count.toLocaleString("ar-SA")+" سجل · "+source+" · "+(d.method==="specific-rule"?"تصنيف موضوعي محدد":"تصنيف آلي يحتاج مراجعة");
    info.append(strong,small);
    const btn=document.createElement("button");btn.type="button";btn.textContent="عرض المواد";
@@ -191,8 +199,8 @@ function renderArticles(){
   source.append(label);
   if(link){
    const a=document.createElement("a");a.href=link;a.target="_blank";a.rel="noopener noreferrer";
-   a.textContent="صفحة التشريع الرسمية ↗";source.append(a);
-   const status=document.createElement("span");status.textContent=" · مرجع على مستوى التشريع، وليس توثيقاً مستقلاً لهذه المادة";source.append(status);
+   a.textContent="رابط حكومي للتشريع (لم يُراجع محتواه بعد) ↗";source.append(a);
+   const status=document.createElement("span");status.textContent=" · رابط حكومي على مستوى التشريع؛ لم تُطابق هذه المادة مع المصدر";source.append(status);
   }else{
    const status=document.createElement("span");status.textContent="المصدر الوارد في البيانات: "+(hit.source||"غير محدد")+" · لا يوجد رابط رسمي مباشر موثق لهذه المادة";source.append(status);
   }
@@ -214,8 +222,8 @@ function createAudit(){
   if(!body.trim())flags.push("missing_text");
   if(!r.source)flags.push("missing_source");
   if(!officialLink({law:name,officialUrl:r.url||r.source_url||r.document_url||r.official_url||r.link||""}))flags.push("no_direct_legislation_url");
-  if(/\\(جزء\\s*\\d+\\)/.test(article))flags.push("article_fragment");
-  if((body.match(/(?:^|\\n)\\s*المادة\\s+[^\\n]{1,45}/g)||[]).length>1)flags.push("multiple_article_headings");
+  if(/\(جزء\s*\d+\)/.test(article))flags.push("article_fragment");
+  if((body.match(/(?:^|\n)\s*المادة\s+[^\n]{1,45}/g)||[]).length>1)flags.push("multiple_article_headings");
   const classification=classifyLaw(name);
   if(classification.method!=="specific-rule")flags.push("classification_requires_review");
   if(flags.length)issues.push({record:index+1,law:name,article,classification:classification.category,flags});
