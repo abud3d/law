@@ -41,7 +41,7 @@ def build_report(rows):
         article = clean(row.get("article_number"))
         raw = str(row.get("text") or "")
         flags = []
-        normalized_text = re.sub(r"\\s+", " ", raw).strip()
+        normalized_text = re.sub(r"\s+", " ", raw).strip()
         exact_key = (article_key(name), article_key(article), normalized_text)
         label_key = (article_key(name), article_key(article))
         if name and article and normalized_text:
