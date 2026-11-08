@@ -44,10 +44,11 @@ def build_report(rows):
         normalized_text = re.sub(r"\\s+", " ", raw).strip()
         exact_key = (article_key(name), article_key(article), normalized_text)
         label_key = (article_key(name), article_key(article))
-        if exact_key in seen_exact:
-            flags.append("exact_duplicate_record")
-        else:
-            seen_exact[exact_key] = idx + 1
+        if name and article and normalized_text:
+            if exact_key in seen_exact:
+                flags.append("exact_duplicate_record")
+            else:
+                seen_exact[exact_key] = idx + 1
         if name and article:
             seen_labels[label_key].append((idx + 1, normalized_text))
         if not name: flags.append("missing_law_name")
@@ -56,7 +57,7 @@ def build_report(rows):
         if not row.get("source"): flags.append("missing_source")
         if not any(row.get(k) for k in ("url", "source_url", "document_url", "official_url", "link")):
             flags.append("missing_direct_url")
-        if name and article and not re.search(re.escape(article_key(article).replace("ا", "[اأإآ]")), article_key(raw)):
+        if name and article and not article_key(article) in article_key(raw):
             flags.append("article_label_not_found_in_text")
         if re.search(r"\(جزء\s*\d+\)", article): flags.append("article_fragment")
         headings = re.findall(r"(?:^|\n)\s*المادة\s+[^\n:]{1,45}", raw)
