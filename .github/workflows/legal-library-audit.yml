@@ -6,7 +6,7 @@ on:
   pull_request:
     paths:
       - 'library/**'
-      - 'scripts/audit_library.py'
+      - 'scripts/**'
       - '.github/workflows/legal-library-audit.yml'
   workflow_dispatch:
 permissions:
@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Test audit rules
+        run: python3 -m unittest discover -s scripts -p "test_*.py" -v
       - name: Verify all imported records and produce structural report
         run: |
           python3 scripts/audit_library.py
