@@ -34,22 +34,22 @@ jobs:
           PY
       - name: Validate legal category coverage for all imported titles
         run: node scripts/test_legal_categories.cjs
-      - name: Validate five sourced official legislation references
+      - name: Validate sourced official legislation catalog
         run: |
           python3 - <<'PY'
           import json
           from pathlib import Path
           from urllib.parse import urlparse
           data=json.loads(Path("library/data/official-legislation-catalog.json").read_text(encoding="utf-8"))
-          assert len(data)==5
-          assert len({x["name"] for x in data})==5
+          assert len(data)>=60
+          assert len({x["name"] for x in data})==len(data)
           for x in data:
-              assert x["record_type"]=="official_legislation_reference"
+              assert x["record_type"] in {"official_legislation_reference","official_legislation_index_reference"}
               assert x["article_text_imported"] is False
               assert x["verified_source_page"] is True
               assert urlparse(x["url"]).hostname=="laws.boe.gov.sa"
-              assert x["category"] in {"iptech","labor","health"}
-          print("Five sourced legal references validated")
+              assert x["category"] in {"civil","commercial","criminal","procedure","labor","family","realestate","administrative","finance","iptech","health","other"}
+          print(len(data),"sourced legal references validated")
           PY
       - name: Validate inline JavaScript syntax
         run: |
