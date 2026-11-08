@@ -205,7 +205,7 @@ function renderArticles(){
    const status=document.createElement("span");status.textContent="المصدر الوارد في البيانات: "+(hit.source||"غير محدد")+" · لا يوجد رابط رسمي مباشر موثق لهذه المادة";source.append(status);
   }
   card.append(source);
- }}target.append(card);});
+ }target.append(card);});
  const pager=document.getElementById("resultPager");pager.replaceChildren();if(hits.length>PAGE_SIZE){const pages=Math.ceil(hits.length/PAGE_SIZE);const prev=document.createElement("button");prev.type="button";prev.textContent="السابق";prev.disabled=resultPage===0;prev.addEventListener("click",()=>{resultPage--;renderArticles();});const label=document.createElement("span");label.textContent="صفحة "+(resultPage+1).toLocaleString("ar-SA")+" من "+pages.toLocaleString("ar-SA");const next=document.createElement("button");next.type="button";next.textContent="التالي";next.disabled=resultPage>=pages-1;next.addEventListener("click",()=>{resultPage++;renderArticles();});pager.append(prev,label,next);} 
  if(!hits.length&&(term||selectedDatasetLaw)){const p=document.createElement("p");p.textContent="لا توجد نتائج مطابقة في البيانات المحمّلة.";target.append(p);}
 }
