@@ -1,0 +1,46 @@
+name: Legal library audit
+on:
+  pull_request:
+    paths:
+      - 'library/**'
+      - 'scripts/audit_library.py'
+      - '.github/workflows/legal-library-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify all imported records and produce structural report
+        run: |
+          python3 scripts/audit_library.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("library/data/saudi-legal-moj.json").read_text(encoding="utf-8"))
+          report=json.loads(Path("library/data/legal-audit.json").read_text(encoding="utf-8"))
+          assert len(data)==3185, f"Unexpected dataset size: {len(data)}"
+          assert report["total_records"]==3185
+          assert len(report["legislation"])>0
+          print("Structural audit passed:",len(data),"records,",len(report["legislation"]),"canonical names")
+          print("Review flags:",report["issue_counts"])
+          PY
+      - name: Validate inline JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          html=Path("library/index.html").read_text(encoding="utf-8")
+          scripts=re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>',html)
+          assert scripts,"No inline scripts found"
+          Path("/tmp/legal-library-inline.js").write_text("\n".join(scripts),encoding="utf-8")
+          PY
+          node --check /tmp/legal-library-inline.js
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: legal-library-3185-audit
+          path: library/data/legal-audit.json
+          retention-days: 30
