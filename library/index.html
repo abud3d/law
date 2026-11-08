@@ -196,7 +196,12 @@ function renderHierarchy(){
   sorted.filter(d=>!used.has(d.name)).forEach(d=>makeRow(d,false));
   if(!systems.length&&others.length){const note=document.createElement("p");note.className="muted-note";note.textContent="لا يوجد نظام أصل مسجل في هذا التخصص لبعض اللوائح؛ عُرضت مستقلة دون افتراض تبعيتها.";list.prepend(note);}
  }
- else{const hint=document.createElement("p");hint.className="muted-note";hint.textContent="اختر تخصصاً من الأعلى لعرض التشريعات التابعة له.";list.append(hint);}
+ else{const hint=document.createElement("p");hint.className="muted-note";hint.textContent="اختر تخصصاً من الأعلى لعرض التشريعات التابعة له.";list.append(hint);
+  const docs=datasetGroups.filter(d=>d.category===c.id);
+  if(docs.length){const heading=document.createElement("strong");heading.textContent="التشريعات المتاحة في هذا المجال ("+docs.length.toLocaleString("ar-SA")+")";list.append(heading);
+   docs.forEach(d=>{const row=document.createElement("div");row.className="document-row";const info=document.createElement("div");const name=document.createElement("strong");name.textContent=d.name;const note=document.createElement("small");note.textContent=d.method==="official-source"?"مرجع حكومي — "+(d.sourceType==="official_legislation_index_reference"?"رابط الفهرس العام":"رابط مباشر"):"مواد مستوردة: "+d.count.toLocaleString("ar-SA");info.append(name,note);const btn=document.createElement("button");btn.type="button";btn.textContent=d.method==="official-source"?"عرض المرجع":"عرض المواد";btn.addEventListener("click",()=>{selectedSub=d.sub;selectedDatasetLaw=d.name;resultPage=0;renderHierarchy();renderArticles();document.getElementById("articleResults").scrollIntoView({behavior:"smooth",block:"start"});});row.append(info,btn);list.append(row);});
+  }
+ }
 }
 function renderArticles(){
  const target=document.getElementById("articleResults"),counter=document.getElementById("articleCount");if(!corpusReady){counter.textContent="جارٍ تحميل المواد والسجلات القانونية…";return;}
