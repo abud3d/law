@@ -1,0 +1,62 @@
+[
+  {
+    "name": "نظام حماية البيانات الشخصية",
+    "category": "iptech",
+    "sub": "البيانات والتقنية",
+    "description": "حماية البيانات الشخصية وحقوق أصحابها وضوابط المعالجة والإفصاح.",
+    "url": "https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/b7cfae89-828e-4994-b167-adaa00e37188/1",
+    "status": "ساري",
+    "source": "هيئة الخبراء بمجلس الوزراء",
+    "record_type": "official_legislation_reference",
+    "article_text_imported": false,
+    "verified_source_page": true
+  },
+  {
+    "name": "نظام حماية حقوق المؤلف",
+    "category": "iptech",
+    "sub": "الملكية الفكرية",
+    "description": "حماية المصنفات وحقوق المؤلف والحقوق المتصلة بها.",
+    "url": "https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/67d159e6-ee98-4efc-a2ee-a9a700f17083/1",
+    "status": "راجع الحالة والتعديلات لدى المصدر",
+    "source": "هيئة الخبراء بمجلس الوزراء",
+    "record_type": "official_legislation_reference",
+    "article_text_imported": false,
+    "verified_source_page": true
+  },
+  {
+    "name": "نظام العلامات التجارية",
+    "category": "iptech",
+    "sub": "الملكية الفكرية",
+    "description": "تسجيل العلامات التجارية وحمايتها والحقوق الناشئة عنها.",
+    "url": "https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/3ec4414f-2ec5-48b1-bcb4-a9a700f1aa2b/1",
+    "status": "ساري",
+    "source": "هيئة الخبراء بمجلس الوزراء",
+    "record_type": "official_legislation_reference",
+    "article_text_imported": false,
+    "verified_source_page": true
+  },
+  {
+    "name": "نظام العمل",
+    "category": "labor",
+    "sub": "علاقات العمل",
+    "description": "تنظيم علاقات العمل وشروطه وحقوق والتزامات أطرافه.",
+    "url": "https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/08381293-6388-48e2-8ad2-a9a700f2aa94/1",
+    "status": "ساري",
+    "source": "هيئة الخبراء بمجلس الوزراء",
+    "record_type": "official_legislation_reference",
+    "article_text_imported": false,
+    "verified_source_page": true
+  },
+  {
+    "name": "نظام البيئة",
+    "category": "health",
+    "sub": "البيئة والموارد",
+    "description": "حماية البيئة واستدامتها وتنظيم الأنشطة ذات الأثر البيئي.",
+    "url": "https://laws.boe.gov.sa/BoeLaws/Laws/LawDetails/63831ff6-63d9-4212-8b54-abf800e146bd/1",
+    "status": "ساري",
+    "source": "هيئة الخبراء بمجلس الوزراء",
+    "record_type": "official_legislation_reference",
+    "article_text_imported": false,
+    "verified_source_page": true
+  }
+]
