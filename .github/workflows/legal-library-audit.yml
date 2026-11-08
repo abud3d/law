@@ -40,7 +40,7 @@ jobs:
           html=Path("library/index.html").read_text(encoding="utf-8")
           scripts=re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>',html)
           assert scripts,"No inline scripts found"
-          assert r"\\\\u" not in "\n".join(scripts), "Doubly escaped Unicode ranges break Arabic normalization"
+          assert r"\\u" not in "\n".join(scripts), "Doubly escaped Unicode ranges break Arabic normalization"
           Path("/tmp/legal-library-inline.js").write_text("\n".join(scripts),encoding="utf-8")
           PY
           node --check /tmp/legal-library-inline.js
