@@ -32,7 +32,7 @@
 .hierarchy-panel{background:#fffefa;border:1px solid var(--line);border-radius:9px;padding:18px;margin:16px 0 28px}.hierarchy-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.hierarchy-heading h3{font-size:17px;margin:0}.law-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
 .dataset-law{padding:15px}.dataset-law h3{font-size:14px}.dataset-law button{font-size:11px}.dataset-warning{line-height:1.8}
 .document-row{border:1px solid var(--line);background:#fff;border-radius:7px;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:12px}.document-row strong{font-size:13px}.document-row small{display:block;color:var(--muted);font-size:11px}.document-row button{white-space:nowrap;border:1px solid var(--line);background:#f7f4ec;color:var(--green);border-radius:5px;padding:7px 10px;font:inherit;font-size:11px;cursor:pointer}
-.related-regulation{margin-inline-start:18px;border-inline-start:3px solid var(--gold);background:#faf9f5}.source-reference{font-size:11px;color:var(--muted);border-top:1px solid var(--line);padding-top:9px;margin-top:10px}.source-reference strong{color:var(--ink)}.source-reference a{font-size:11px}.pathline{font-size:11px;color:#8b7044;margin:8px 0}
+.result-pager{display:flex;justify-content:center;align-items:center;gap:12px;margin:18px 0}.result-pager button{padding:8px 15px;border:1px solid var(--line);border-radius:6px;background:var(--green);color:#fff;cursor:pointer}.result-pager button:disabled{opacity:.45;cursor:default}.result-pager span{font-size:12px;color:var(--muted)}.related-regulation{margin-inline-start:18px;border-inline-start:3px solid var(--gold);background:#faf9f5}.source-reference{font-size:11px;color:var(--muted);border-top:1px solid var(--line);padding-top:9px;margin-top:10px}.source-reference strong{color:var(--ink)}.source-reference a{font-size:11px}.pathline{font-size:11px;color:#8b7044;margin:8px 0}
 @media(max-width:850px){.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.category-grid,.law-list{grid-template-columns:1fr}.hierarchy-panel{padding:13px}.document-row{align-items:flex-start;flex-direction:column}.document-row button{width:100%}}
 
@@ -68,7 +68,7 @@
   <h2>نتائج البحث داخل المواد والسجلات</h2>
   <p class="article-search-note">تظهر هنا النتائج المطابقة من صفحات الموقع والمجموعة المستوردة. السجلات المستوردة غير مطابقة رسمياً.</p>
   <div id="articleCount" class="article-count">جارٍ تحميل المواد…</div>
-  <div id="articleResults" class="article-results" aria-live="polite"></div>
+  <div id="articleResults" class="article-results" aria-live="polite"></div><div class="result-pager" id="resultPager" aria-label="صفحات النتائج"></div>
  </section>
 </main>
 <footer class="site-footer"><div class="site-wrap"><div class="site-footer-top"><div><strong>حصة آل علي</strong><div>المكتبة القانونية السعودية</div></div><nav class="site-footer-links"><a href="../index.html">الرئيسية</a><a href="index.html">فهرس الأنظمة</a><a href="../index.html#faq">الأسئلة الشائعة</a><a href="../index.html#official">المراجع الحكومية</a><a href="../index.html#contact">التواصل</a></nav></div><div class="site-footer-bottom">النصوص النظامية يُرجع فيها إلى المصدر الحكومي الرسمي، والمحتوى للتوعية العامة ولا يمثل استشارة قانونية مخصصة. لا تعني روابط الجهات وجود شراكة أو اعتماد منها.</div></div></footer>
@@ -125,7 +125,7 @@ const classifyLaw=name=>{
  return {...categoryFor(n),method:"keyword-rule"};
 };
 const categoryName=id=>categories.find(c=>c.id===id)?.name||"قطاعات ومجالات أخرى";
-let cat="all",articleCorpus=[],corpusReady=false,datasetCount=0,datasetLaws=0,datasetError=false,datasetGroups=[],selectedDatasetLaw="",selectedCategory="",selectedSub="";
+let resultPage=0;const PAGE_SIZE=40;let cat="all",articleCorpus=[],corpusReady=false,datasetCount=0,datasetLaws=0,datasetError=false,datasetGroups=[],selectedDatasetLaw="",selectedCategory="",selectedSub="";
 async function loadArticles(){
  try{
   const response=await fetch("data/saudi-legal-moj.json");
@@ -162,7 +162,7 @@ function renderHierarchy(){
    small.textContent=d.type+" · "+d.count.toLocaleString("ar-SA")+" سجل · "+source+" · "+(d.method==="specific-rule"?"تصنيف موضوعي محدد":"تصنيف آلي يحتاج مراجعة");
    info.append(strong,small);
    const btn=document.createElement("button");btn.type="button";btn.textContent="عرض المواد";
-   btn.addEventListener("click",()=>{selectedDatasetLaw=d.name;renderArticles();document.getElementById("articleResults").scrollIntoView({behavior:"smooth",block:"start"});});
+   btn.addEventListener("click",()=>{selectedDatasetLaw=d.name;resultPage=0;renderArticles();document.getElementById("articleResults").scrollIntoView({behavior:"smooth",block:"start"});});
    row.append(info,btn);list.append(row);
   };
   const used=new Set();
@@ -183,7 +183,7 @@ function renderArticles(){
  else if(selectedCategory&&selectedSub)hits=articleCorpus.filter(x=>x.origin==="dataset"&&x.category===selectedCategory&&x.sub===selectedSub);
  const imported=hits.filter(x=>x.origin==="dataset").length;
  counter.textContent=selectedDatasetLaw?"التشريع المحدد: "+selectedDatasetLaw+" · "+imported.toLocaleString("ar-SA")+" سجل — غير مطابق رسمياً":term?"نتائج البحث: "+hits.length.toLocaleString("ar-SA")+" (المجموعة المستوردة: "+imported.toLocaleString("ar-SA")+")":selectedSub?"سجلات التخصص: "+hits.length.toLocaleString("ar-SA"):"اكتب عبارة للبحث أو اختر تشريعاً من المجالات أعلاه.";
- target.replaceChildren();hits.slice(0,100).forEach(hit=>{const card=document.createElement("article");card.className="article-hit";const h=document.createElement("h3");h.textContent=hit.title+" — "+hit.law;const p=document.createElement("p");p.textContent=(hit.text||"").slice(0,1000)+(hit.text&&hit.text.length>1000?"…":"");card.append(h,p);if(hit.origin==="site"){const a=document.createElement("a");a.href=hit.file+"#"+hit.anchor;a.textContent="فتح صفحة النظام ←";card.append(a);}else{
+ target.replaceChildren();hits.slice(resultPage*PAGE_SIZE,(resultPage+1)*PAGE_SIZE).forEach(hit=>{const card=document.createElement("article");card.className="article-hit";const h=document.createElement("h3");h.textContent=hit.title+" — "+hit.law;const p=document.createElement("p");p.textContent=(hit.text||"").slice(0,1000)+(hit.text&&hit.text.length>1000?"…":"");card.append(h,p);if(hit.origin==="site"){const a=document.createElement("a");a.href=hit.file+"#"+hit.anchor;a.textContent="فتح صفحة النظام ←";card.append(a);}else{
   const link=officialLink(hit);
   const source=document.createElement("div");source.className="source-reference";
   const label=document.createElement("strong");label.textContent="مرجع السجل: ";
@@ -197,10 +197,11 @@ function renderArticles(){
   }
   card.append(source);
  }}target.append(card);});
+ const pager=document.getElementById("resultPager");pager.replaceChildren();if(hits.length>PAGE_SIZE){const pages=Math.ceil(hits.length/PAGE_SIZE);resultPage=Math.min(resultPage,pages-1);const prev=document.createElement("button");prev.type="button";prev.textContent="السابق";prev.disabled=resultPage===0;prev.addEventListener("click",()=>{resultPage--;renderArticles();});const label=document.createElement("span");label.textContent="صفحة "+(resultPage+1).toLocaleString("ar-SA")+" من "+pages.toLocaleString("ar-SA");const next=document.createElement("button");next.type="button";next.textContent="التالي";next.disabled=resultPage>=pages-1;next.addEventListener("click",()=>{resultPage++;renderArticles();});pager.append(prev,label,next);} 
  if(!hits.length&&(term||selectedDatasetLaw)){const p=document.createElement("p");p.textContent="لا توجد نتائج مطابقة في البيانات المحمّلة.";target.append(p);}
 }
-document.getElementById("hierarchyBack").addEventListener("click",()=>{selectedCategory="";selectedSub="";selectedDatasetLaw="";renderHierarchy();renderArticles();});
-q.addEventListener("input",()=>{selectedDatasetLaw="";selectedCategory="";selectedSub="";renderHierarchy();renderArticles();});
+document.getElementById("hierarchyBack").addEventListener("click",()=>{selectedCategory="";selectedSub="";selectedDatasetLaw="";resultPage=0;renderHierarchy();renderArticles();});
+q.addEventListener("input",()=>{resultPage=0;selectedDatasetLaw="";selectedCategory="";selectedSub="";renderHierarchy();renderArticles();});
 renderHierarchy();renderArticles();loadArticles();
 </script>
 </body></html>
